@@ -1,4 +1,4 @@
-<div class="leads form">
+<!-- <div class="leads form">
 <?php echo $this->Form->create('Lead'); ?>
 	<fieldset>
 		<legend><?php echo __('Add Lead'); ?></legend>
@@ -20,3 +20,4 @@
 		<li><?php echo $this->Html->link(__('New Campaign'), array('controller' => 'campaigns', 'action' => 'add')); ?> </li>
 	</ul>
 </div>
+ -->
