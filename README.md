@@ -1,39 +1,22 @@
-CakePHP
+Leads Manager 2
 =======
 
-[![CakePHP](http://cakephp.org/img/cake-logo.png)](http://www.cakephp.org)
+Manage campaign & online leads generation.
 
-CakePHP is a rapid development framework for PHP which uses commonly known design patterns like Active Record, Association Data Mapping, Front Controller and MVC.
-Our primary goal is to provide a structured framework that enables PHP users at all levels to rapidly develop robust web applications, without any loss to flexibility.
-
-Some Handy Links
+Platform Used
 ----------------
 
-[CakePHP](http://www.cakephp.org) - The rapid development PHP framework
+Cake PHP 2.2.x
 
-[Cookbook](http://book.cakephp.org) - THE Cake user documentation; start learning here!
-
-[Plugins](http://plugins.cakephp.org/) - A repository of extensions to the framework
-
-[The Bakery](http://bakery.cakephp.org) - Tips, tutorials and articles
-
-[API](http://api.cakephp.org) - A reference to Cake's classes
-
-[CakePHP TV](http://tv.cakephp.org) - Screen casts from events and video tutorials
-
-[The Cake Software Foundation](http://cakefoundation.org/) - promoting development related to CakePHP
-
-Get Support!
+Planned Features
 ------------
 
-[Our Google Group](http://groups.google.com/group/cake-php) - community mailing list and forum
+ACL implementation
 
-[#cakephp](http://webchat.freenode.net/?channels=#cakephp) on irc.freenode.net - Come chat with us, we have cake.
+Campaign creation - Manage leads based on their campaign setting
 
-[Q & A](http://ask.cakephp.org/) - Ask questions here, all questions welcome
+Universal lead capture - (email, campaign id, lead properties) 
 
-[Lighthouse](http://cakephp.lighthouseapp.com/) - Got issues? Please tell us!
+Email receipt - Option to send email receipt upon form submission
 
-[![Bake Status](https://secure.travis-ci.org/cakephp/cakephp.png?branch=master)](http://travis-ci.org/cakephp/cakephp)
-
-![Cake Power](https://raw.github.com/cakephp/cakephp/master/lib/Cake/Console/Templates/skel/webroot/img/cake.power.gif)
+Campaign Performance View - leads view, performance report & analytic, report creation
