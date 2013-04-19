@@ -146,7 +146,8 @@ class LeadsController extends AppController {
 	        $method    	= $campaign['Campaign']['method'];
 	        
 	        $this->Lead->set($this->request->data);
-	        $this->Lead->validate = json_decode($rules, true);
+	        $validates = json_decode($rules, true);
+	        $this->Lead->validate = $validates;
 
 	        if ($this->Lead->validates()) { // it validated logic
 	            $posted = $this->request->data;
@@ -157,13 +158,19 @@ class LeadsController extends AppController {
 	                    break;
 	                }
 	            }
-
 	            $email = $posted[$emailfield]; # user predefine in campaign table
 	            $redirect = isset($posted['redirect']) ? "http://".$posted['redirect'] : array('action' => 'posted'); # fetch 'redirect' value for conversion page redirect
 
+	            # reformat lead entry
+	            $keyvalidate = array_keys($validates);
+	            $repost = array();
+	            foreach ($keyvalidate as $key => $value) {
+	            	$repost[$value] = @$posted[$value];
+	            }
+
 	            $leads = array( 
 	                'Lead'  => array(
-	                "lead"     		=> json_encode($posted), # compact lead values into one field
+	                "lead"     		=> json_encode($repost), # compact lead values into one field
 	                "email"     	=> $email, 
 	                "campaign_id"  => $campaign_id, 
 	                "ip"       	=> $client_ip
