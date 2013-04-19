@@ -114,20 +114,6 @@ class LeadsController extends AppController {
  *
  * @return void
  */
-	// public function incoming() { #add 
-	// 	if ($this->request->is('post')) {
-	// 		$this->Lead->create();
-	// 		if ($this->Lead->save($this->request->data)) {
-	// 			$this->Session->setFlash(__('The lead has been saved'));
-	// 			$this->redirect(array('action' => 'index'));
-	// 		} else {
-	// 			$this->Session->setFlash(__('The lead could not be saved. Please, try again.'));
-	// 		}
-	// 	}
-	// 	$campaigns = $this->Lead->Campaign->find('list');
-	// 	$this->set(compact('campaigns'));
-	// }
-
 	public function incoming() {
         $this->autoRender = false; 
         if ($this->request->is('post')) {

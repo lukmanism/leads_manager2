@@ -108,4 +108,45 @@ class Campaign extends AppModel {
 		)
 	);
 
+    public function required($val) {
+        if(isset($val)){
+            $required = array('rule' => 'notEmpty', 'message' => 'This field cannot be left blank');
+        } else {
+            $required = "";
+        }
+        return $required;
+    }
+
+    public function format($val,$prop=null) {
+        switch($val){
+            case 'alphaNumeric':
+                $rule = array('rule' => array('alphaNumeric', true), 'message' => 'Field must only contain letters and numbers.');
+            break;
+            case 'numeric':
+                $rule = array('rule' => array('numeric', true), 'message' => 'Field must only contain numbers only.');
+            break;
+            case 'blank':
+                $rule = array('rule' => array('blank'));
+            break;
+            case 'boolean':
+                $rule = array('rule' => array('boolean'));
+            break;
+            case 'email':
+                $rule = array('rule' => 'emailDuplicate', 'message' => 'Email address has been registered.');
+            break;
+            case 'phone':
+                $rule = array('rule' => array('phone', null, "$prop"));
+            break;
+            case 'postal':
+                $rule = array('rule' => array('postal', null, "$prop"));
+            break;
+            case 'custom':
+                $rule = array('rule' => array('custom', null, "$prop"));
+            break;
+            default:
+                $rule = "";
+            break;
+        }
+        return $rule;
+    }
 }

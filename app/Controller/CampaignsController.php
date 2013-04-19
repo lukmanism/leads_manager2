@@ -116,8 +116,6 @@ class CampaignsController extends AppController {
 		$this->Campaign->recursive = -1;
         $this->Campaign->id = $id;
         $this->set('campaigns', $this->Campaign->read());
-
-
         if ($this->request->is('get')) {
             $this->request->data = $this->Campaign->read();
         } else {
@@ -126,18 +124,18 @@ class CampaignsController extends AppController {
             $alias     = str_replace(" ", "", strtolower($posted['Campaign']['alias']));
             $external  = $posted['Campaign']['external'];
             $rules     = $posted['Campaign']['rules'];
+            $method    = $posted['Campaign']['method'];
+            $user_id   = $posted['Campaign']['user_id'];
             $note      = $posted['Campaign']['note'];
-
+            // var_dump($rules);
             foreach ($rules as $key) {
-                $allrules[$key['fieldname']] = array();
-                @$required = CampaignsController::required($key['required']);
-                $fieldtype = CampaignsController::format($key['fieldtype'],@$key['fieldprop']);
+                @$allrules[$key['fieldname']] = array();
+                @$required = $this->Campaign->required($key['required']);
+                @$fieldtype = $this->Campaign->format($key['fieldtype'],@$key['fieldprop']);
                 if($key['fieldtype'] == 'email') {                    
-                    $rule = array('rule' => array('email', true), 'message' => 'Please supply a valid email address.');
+                    @$rule = array('rule' => array('email', true), 'message' => 'Please supply a valid email address.');
                     array_push($allrules[$key['fieldname']], $rule);
                 }
-
-
                 @$fieldtypearray['rule_format'] = (is_null($fieldtype))? '' : $fieldtype;
                 @$requiredarray['rule_required'] = (is_null($required))? '' : $required;
 
@@ -149,9 +147,17 @@ class CampaignsController extends AppController {
                 }
             }
 
-            $leads = array("name" => $name, "alias" => $alias, "external" => $external, "rules" => json_encode($allrules), "note" => $note);
-
-            if ($this->Campaign->save($leads, array('validate' => false))) {
+            // exit;
+            $leads = array(
+                "name"      => $name, 
+                "alias"     => $alias, 
+                "external"  => $external, 
+                "rules"     => json_encode($allrules), 
+                "method"    => $method, 
+                "user_id"   => $user_id, 
+                "note"      => $note
+            );
+            if ($this->Campaign->save($leads)) {
                 $this->Session->setFlash('Your campaign has been saved.');
                 $this->redirect(array('action' => 'index'));
             } else {
