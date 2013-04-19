@@ -27,7 +27,7 @@ body {
 	background: #003d4c;
 	color: #fff;
 	font-family:'lucida grande',verdana,helvetica,arial,sans-serif;
-	font-size:90%;
+	font-size:70%;
 	margin: 0;
 }
 a {
@@ -737,4 +737,74 @@ pre {
 /** Elements **/
 #url-rewriting-warning {
 	display:none;
+}
+
+
+input, select, textarea {
+	border: solid 1px #8E927E;	 
+	font-size: 90%;	
+}
+.row.first {
+	padding-left: 60px;
+}
+.row {
+	padding-left: 20px;
+}
+.row, span.properties {
+	display: inline-block;
+}
+.row label {
+	font-weight: bold;
+}
+input[type="button"] {
+    cursor: pointer;	
+}
+input[type="button"]:hover {
+	color: #FFFFFF;
+	background-color: #757867;
+}
+input.remove {
+	cursor: pointer;
+    float: right;
+    font-size: 14px;
+    height: 32px;
+    line-height: 32px;
+    margin: 0;
+    padding: 0;
+    width: 32px;
+}
+.fieldwrapper {
+	border-bottom: dotted 1px #B3B5A8;
+	min-height: 60px;
+	height: auto!important;
+	position: relative;
+}
+.fieldwrapper:hover {
+	background-color: #FFFFCC;
+}
+h3.number {
+	position: absolute;
+	left: 10px;
+	font-weight: bold;
+	font-size: 34px;
+	color: #E8E9E4;
+	width: 36px;
+	text-align: right;
+	line-height: 64px;
+}
+input[type="text"] {
+	width: 250px;
+}
+input.cancel {
+	float: right;
+}
+
+.filter {
+	width: 80%;
+	margin: 20px auto;
+	padding: 40px;
+	border: dotted 1px #C0C0C0;
+}
+#buildyourform input[type="text"] {
+	width: auto;
 }

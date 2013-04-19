@@ -1,3 +1,8 @@
+<?
+// var_dump($campaigns);
+
+
+?>
 <div class="campaigns index">
 	<h2><?php echo __('Campaigns'); ?></h2>
 	<table cellpadding="0" cellspacing="0">
@@ -6,10 +11,8 @@
 			<th><?php echo $this->Paginator->sort('name'); ?></th>
 			<th><?php echo $this->Paginator->sort('alias'); ?></th>
 			<th><?php echo $this->Paginator->sort('external'); ?></th>
-			<th><?php echo $this->Paginator->sort('rules'); ?></th>
 			<th><?php echo $this->Paginator->sort('method'); ?></th>
 			<th><?php echo $this->Paginator->sort('user_id'); ?></th>
-			<th><?php echo $this->Paginator->sort('note'); ?></th>
 			<th><?php echo $this->Paginator->sort('created'); ?></th>
 			<th class="actions"><?php echo __('Actions'); ?></th>
 	</tr>
@@ -19,12 +22,17 @@
 		<td><?php echo h($campaign['Campaign']['name']); ?>&nbsp;</td>
 		<td><?php echo h($campaign['Campaign']['alias']); ?>&nbsp;</td>
 		<td><?php echo h($campaign['Campaign']['external']); ?>&nbsp;</td>
-		<td><?php echo h($campaign['Campaign']['rules']); ?>&nbsp;</td>
-		<td><?php echo h($campaign['Campaign']['method']); ?>&nbsp;</td>
+		<td><?php 
+		echo (h($campaign['Campaign']['method'])==0) ? 'Ajax Post' : 'Form Post'; 
+		?>&nbsp;</td>
 		<td>
-			<?php echo $this->Html->link($campaign['User']['id'], array('controller' => 'users', 'action' => 'view', $campaign['User']['id'])); ?>
+			<?php 
+			echo $this->Html->link(
+			h($campaign['User']['username']), 
+			array('controller' => 'users', 'action' => 'view', 
+			$campaign['User']['id'])
+			); ?>
 		</td>
-		<td><?php echo h($campaign['Campaign']['note']); ?>&nbsp;</td>
 		<td><?php echo h($campaign['Campaign']['created']); ?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('View'), array('action' => 'view', $campaign['Campaign']['id'])); ?>
@@ -49,14 +57,18 @@
 	</div>
 </div>
 <div class="actions">
+	<h3>Campaign Edit</h3>
+	<ul>
+		<li><?php echo $this->Html->link(__('New'), array('action' => 'add')); ?></li>
+	</ul>
+</div>
+<div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('New Campaign'), array('action' => 'add')); ?></li>
-		<li><?php echo $this->Html->link(__('List Users'), array('controller' => 'users', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New User'), array('controller' => 'users', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Leads'), array('controller' => 'leads', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Lead'), array('controller' => 'leads', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Logs'), array('controller' => 'logs', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Log'), array('controller' => 'logs', 'action' => 'add')); ?> </li>
+        <li><?php echo $this->Html->link(__('List Users'), array('controller' => 'users', 'action' => 'index')); ?> </li>
+        <li><?php echo $this->Html->link(__('List Leads'), array('controller' => 'leads', 'action' => 'index')); ?> </li>
+        <li><?php echo $this->Html->link(__('List Logs'), array('controller' => 'logs', 'action' => 'index')); ?> </li>
+        <li><?php echo $this->Html->link(__('List Campaigns'), array('controller' => 'campaigns', 'action' => 'index')); ?> </li>
+		<li><a href="<?=$this->Html->url('/users/logout', true);?>">Logout</a></li>
 	</ul>
 </div>

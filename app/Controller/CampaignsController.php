@@ -25,11 +25,15 @@ class CampaignsController extends AppController {
  * @return void
  */
 	public function view($id = null) {
+		$this->Campaign->recursive = -1;
 		if (!$this->Campaign->exists($id)) {
 			throw new NotFoundException(__('Invalid campaign'));
 		}
 		$options = array('conditions' => array('Campaign.' . $this->Campaign->primaryKey => $id));
-		$this->set('campaign', $this->Campaign->find('first', $options));
+		$this->set(
+			'campaign', 
+			$this->Campaign->find('first', $options)
+		);
 	}
 
 /**
@@ -38,17 +42,63 @@ class CampaignsController extends AppController {
  * @return void
  */
 	public function add() {
-		if ($this->request->is('post')) {
-			$this->Campaign->create();
-			if ($this->Campaign->save($this->request->data)) {
-				$this->Session->setFlash(__('The campaign has been saved'));
-				$this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The campaign could not be saved. Please, try again.'));
-			}
-		}
-		$users = $this->Campaign->User->find('list');
-		$this->set(compact('users'));
+        $this->User = ClassRegistry::init('User');
+        $user = $this->Auth->user();
+		$this->set('user', $user);
+		$this->set('userlist', $this->User->find('all', array('fields' => array('User.id', 'User.username'), 'recursive' => -1)));
+
+        if ($this->request->is('post')) {
+            $this->Campaign->create();
+
+            $posted    = $this->request->data;
+            $name      = $posted['Campaign']['name'];
+            $alias     = str_replace(" ", "", strtolower($posted['Campaign']['alias']));
+            $external  = $posted['Campaign']['external'];
+            $rules     = $posted['Campaign']['rules'];
+            $method     = $posted['Campaign']['method'];
+            $user_id   = $posted['Campaign']['user_id'];
+            $note      = $posted['Campaign']['note'];
+
+            foreach ($rules as $key) {
+                $allrules[$key['fieldname']] = array();
+
+                @$required = CampaignsController::required($key['required']);
+                $fieldtype = CampaignsController::format($key['fieldtype'],@$key['fieldprop']);
+                if($key['fieldtype'] == 'email') {                    
+                    $rule = array('rule' => array('email', true), 'message' => 'Please supply a valid email address.');
+                    array_push($allrules[$key['fieldname']], $rule);
+                }
+
+
+                @$fieldtypearray['rule_format'] = (is_null($fieldtype))? '' : $fieldtype;
+                @$requiredarray['rule_required'] = (is_null($required))? '' : $required;
+
+                if(!empty($fieldtype)){
+                    array_push($allrules[$key['fieldname']], @$fieldtypearray['rule_format']);                    
+                }
+                if(!empty($required)){
+                    array_push($allrules[$key['fieldname']], @$requiredarray['rule_required']);
+                }
+
+            }
+
+            $leads = array(
+            	"name" 		=> $name, 
+            	"alias" 	=> $alias, 
+            	"external" 	=> $external, 
+            	"rules" 	=> json_encode($allrules), 
+            	"method" 	=> $method, 
+            	"user_id" 	=> $user_id, 
+            	"note" 		=> $note
+            );
+
+            if ($this->Campaign->save($leads, array('validate' => false))) {
+                $this->Session->setFlash('Your campaign has been saved.');
+                $this->redirect(array('action' => 'index'));
+            } else {
+                $this->Session->setFlash('Unable to add your campaign.');
+            }
+        }
 	}
 
 /**
@@ -59,22 +109,55 @@ class CampaignsController extends AppController {
  * @return void
  */
 	public function edit($id = null) {
-		if (!$this->Campaign->exists($id)) {
-			throw new NotFoundException(__('Invalid campaign'));
-		}
-		if ($this->request->is('post') || $this->request->is('put')) {
-			if ($this->Campaign->save($this->request->data)) {
-				$this->Session->setFlash(__('The campaign has been saved'));
-				$this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The campaign could not be saved. Please, try again.'));
-			}
-		} else {
-			$options = array('conditions' => array('Campaign.' . $this->Campaign->primaryKey => $id));
-			$this->request->data = $this->Campaign->find('first', $options);
-		}
-		$users = $this->Campaign->User->find('list');
-		$this->set(compact('users'));
+        $this->User = ClassRegistry::init('User');
+        $user = $this->Auth->user();
+		$this->set('user', $user);
+		$this->set('userlist', $this->User->find('all', array('fields' => array('User.id', 'User.username'), 'recursive' => -1)));
+		$this->Campaign->recursive = -1;
+        $this->Campaign->id = $id;
+        $this->set('campaigns', $this->Campaign->read());
+
+
+        if ($this->request->is('get')) {
+            $this->request->data = $this->Campaign->read();
+        } else {
+            $posted    = $this->request->data;
+            $name      = $posted['Campaign']['name'];
+            $alias     = str_replace(" ", "", strtolower($posted['Campaign']['alias']));
+            $external  = $posted['Campaign']['external'];
+            $rules     = $posted['Campaign']['rules'];
+            $note      = $posted['Campaign']['note'];
+
+            foreach ($rules as $key) {
+                $allrules[$key['fieldname']] = array();
+                @$required = CampaignsController::required($key['required']);
+                $fieldtype = CampaignsController::format($key['fieldtype'],@$key['fieldprop']);
+                if($key['fieldtype'] == 'email') {                    
+                    $rule = array('rule' => array('email', true), 'message' => 'Please supply a valid email address.');
+                    array_push($allrules[$key['fieldname']], $rule);
+                }
+
+
+                @$fieldtypearray['rule_format'] = (is_null($fieldtype))? '' : $fieldtype;
+                @$requiredarray['rule_required'] = (is_null($required))? '' : $required;
+
+                if(!empty($fieldtype)){
+                    array_push($allrules[$key['fieldname']], @$fieldtypearray['rule_format']);                    
+                }
+                if(!empty($required)){
+                    array_push($allrules[$key['fieldname']], @$requiredarray['rule_required']);
+                }
+            }
+
+            $leads = array("name" => $name, "alias" => $alias, "external" => $external, "rules" => json_encode($allrules), "note" => $note);
+
+            if ($this->Campaign->save($leads, array('validate' => false))) {
+                $this->Session->setFlash('Your campaign has been saved.');
+                $this->redirect(array('action' => 'index'));
+            } else {
+                $this->Session->setFlash('Unable to update your campaign.');
+            }
+        }
 	}
 
 /**

@@ -9,8 +9,7 @@ class LeadsController extends AppController {
 
 	public function beforeFilter() {
 	    parent::beforeFilter();
-	    // $this->Auth->allow('incoming');
-	    $this->Auth->allow(); #temporary access
+	    $this->Auth->allow('incoming');
 	}
 
 
