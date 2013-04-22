@@ -63,7 +63,7 @@ $(document).ready(function() {
         // if a csv div is already open, delete it
         if($('.csv-data').length) $('.csv-data').remove();
         // open a div with a download link
-        $('.csv_dl').append('<div class="csv-data"><form enctype="multipart/form-data" method="post" action="leads/csv"><textarea class="form" name="csv" style="display:none;">'+csv+'</textarea><input type="submit" class="submit" value="Download as file" /><input type="button" class="cancel button" value="Cancel" /></form></div>');
+        $('.csv_dl').append('<div class="csv-data"><form enctype="multipart/form-data" method="post" action="leads/csv"><textarea class="form" name="csv" style="display:none;">'+csv+'</textarea><ul><li><input type="submit" class="submit" value="Download as file" /></li><li><a href="#" class="cancel button" >Cancel</a></li></ul></form></div>');
  
     }
  

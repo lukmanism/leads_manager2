@@ -506,6 +506,7 @@ p.error em {
 
 /* Buttons and button links */
 input[type=submit],
+input[type=button],
 .actions ul li a,
 .actions a {
 	font-weight:normal;
@@ -532,12 +533,14 @@ input[type=submit],
 	user-select: none;
 }
 .actions ul li a:hover,
+input[type=button]:hover,
 .actions a:hover {
 	background: #ededed;
 	border-color: #acacac;
 	text-decoration: none;
 }
 input[type=submit]:active,
+input[type=button]:active,
 .actions ul li a:active,
 .actions a:active {
 	background: #eee;
