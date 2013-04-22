@@ -13,6 +13,7 @@ class CampaignsController extends AppController {
  * @return void
  */
 	public function index() {
+        $this->set('user', $this->Auth->user());
 		$this->Campaign->recursive = 0;
 		$this->set('campaigns', $this->paginate());
 	}
@@ -62,8 +63,8 @@ class CampaignsController extends AppController {
             foreach ($rules as $key) {
                 $allrules[$key['fieldname']] = array();
 
-                @$required = CampaignsController::required($key['required']);
-                $fieldtype = CampaignsController::format($key['fieldtype'],@$key['fieldprop']);
+                @$required = $this->Campaign->required($key['required']);
+                $fieldtype = $this->Campaign->format($key['fieldtype'],@$key['fieldprop']);
                 if($key['fieldtype'] == 'email') {                    
                     $rule = array('rule' => array('email', true), 'message' => 'Please supply a valid email address.');
                     array_push($allrules[$key['fieldname']], $rule);

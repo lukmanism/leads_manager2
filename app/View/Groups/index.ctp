@@ -39,17 +39,23 @@
 <div class="actions">
 	<h3><?php echo __('Actions Edit'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('New Group'), array('action' => 'add')); ?></li>
+		<li><?php echo $this->Html->link(__('New'), array('action' => 'add')); ?></li>
 	</ul>
-</div>
-<div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-        <li><?php echo $this->Html->link(__('List Users'), array('controller' => 'users', 'action' => 'index')); ?> </li>
         <li><?php echo $this->Html->link(__('List Leads'), array('controller' => 'leads', 'action' => 'index')); ?> </li>
         <li><?php echo $this->Html->link(__('List Logs'), array('controller' => 'logs', 'action' => 'index')); ?> </li>
-        <li><?php echo $this->Html->link(__('List Campaigns'), array('controller' => 'campaigns', 'action' => 'index')); ?> </li>
-		<li><a href="<?=$this->Html->url('/admin/acl', true);?>">ACL</a></li>
-		<li><a href="<?=$this->Html->url('/users/logout', true);?>">Logout</a></li>
 	</ul>
+
+    <? if($curuser['Group']['name'] == 'administrators'): ?>
+    <h3><?php echo __('Admin Actions'); ?></h3>
+    <ul>
+        <li><?php echo $this->Html->link(__('List Users'), array('controller' => 'users', 'action' => 'index')); ?> </li>
+        <li><?php echo $this->Html->link(__('List Campaigns'), array('controller' => 'campaigns', 'action' => 'index')); ?> </li>
+        <li><?php echo $this->Html->link(__('List Groups'), array('controller' => 'groups', 'action' => 'index')); ?> </li>
+        <li><a href="<?=$this->Html->url('/admin/acl', true);?>">ACL</a></li>
+    </ul>
+    <? endif; ?>
+    <!-- Logout -->
+    <div class="logout"><a href="<?=$this->Html->url('/users/logout', true);?>">Logout</a></div>
 </div>

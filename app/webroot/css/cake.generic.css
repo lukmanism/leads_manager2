@@ -792,7 +792,8 @@ h3.number {
 	text-align: right;
 	line-height: 64px;
 }
-input[type="text"] {
+input[type="text"],
+input[type="password"] {
 	width: 250px;
 }
 input.cancel {
@@ -807,4 +808,10 @@ input.cancel {
 }
 #buildyourform input[type="text"] {
 	width: auto;
+}
+
+.logout {
+	border-top: 1px dotted #EAEBE7;
+	padding: 20px 0;
+	margin: 20px 0;
 }

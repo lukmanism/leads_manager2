@@ -24,17 +24,14 @@ echo $this->Form->input('external');
 echo $this->Form->input('note');
 
 if($user['Group']['name'] == 'administrators'){
-	$options = array();
-	$values = array();
-	foreach ($userlist as $key => $user) {
-		array_push($options, $user['User']['username']);
-		array_push($values, $user['User']['id']);
-	}
-	echo $this->Form->input('user_id', array(
-	    'options' => $options,
-	    'values' => $values,
-	    'empty' => 'Please Select...'
-	));
+    $options = array();
+    foreach ($userlist as $key => $user) {
+        $options[$user['User']['id']] = $user['User']['username'];
+    }
+    echo $this->Form->input('user_id', array(
+        'options' => $options,
+        'empty' => 'Please Select...'
+    ));
 } else {
 	echo $this->Form->hidden('user_id',array('value' => $user['id'], 'type' => 'text'));
 }
@@ -124,13 +121,8 @@ echo $this->Form->end('Save Campaign');
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-
-		<li><?php echo $this->Html->link(__('List Campaigns'), array('action' => 'index')); ?></li>
-		<li><?php echo $this->Html->link(__('List Users'), array('controller' => 'users', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New User'), array('controller' => 'users', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Leads'), array('controller' => 'leads', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Lead'), array('controller' => 'leads', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Logs'), array('controller' => 'logs', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Log'), array('controller' => 'logs', 'action' => 'add')); ?> </li>
+        <li><?php echo $this->Html->link(__('List Campaigns'), array('action' => 'index')); ?> </li>
 	</ul>
+    <!-- Logout -->
+    <div class="logout"><a href="<?=$this->Html->url('/users/logout', true);?>">Logout</a></div>
 </div>

@@ -19,6 +19,7 @@ class GroupsController extends AppController {
  * @return void
  */
 	public function index() {
+        $this->set('curuser', $this->Auth->user());
 		$this->Group->recursive = 0;
 		$this->set('groups', $this->paginate());
 	}

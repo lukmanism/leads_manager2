@@ -10,20 +10,18 @@
         
  if($user['Group']['name'] == 'administrators'){
     $options = array();
-    $values = array();
     foreach ($userlist as $key => $user) {
-        array_push($options, $user['User']['username']);
-        array_push($values, $user['User']['id']);
+        $options[$user['User']['id']] = $user['User']['username'];
     }
     echo $this->Form->input('user_id', array(
         'options' => $options,
-        'values' => $values,
         'empty' => 'Please Select...'
     ));
 }
-       
+    $method = ($campaigns['Campaign']['method'] == 1)?1:0;
     echo $this->Form->input('method', array(
         'options' => array('Ajax Post', 'Form Post'),
+        'selected' => $method,
         'empty' => 'Please Select...'
     ));
 
@@ -218,14 +216,9 @@ $('.fieldtype').live('change', function(){
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-
-		<li><?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $this->Form->value('Campaign.id')), null, __('Are you sure you want to delete # %s?', $this->Form->value('Campaign.id'))); ?></li>
-		<li><?php echo $this->Html->link(__('List Campaigns'), array('action' => 'index')); ?></li>
-		<li><?php echo $this->Html->link(__('List Users'), array('controller' => 'users', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New User'), array('controller' => 'users', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Leads'), array('controller' => 'leads', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Lead'), array('controller' => 'leads', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Logs'), array('controller' => 'logs', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Log'), array('controller' => 'logs', 'action' => 'add')); ?> </li>
+        <li><?php echo $this->Html->link(__('List Campaigns'), array('action' => 'index')); ?> </li>
+    </ul>
 	</ul>
+    <!-- Logout -->
+    <div class="logout"><a href="<?=$this->Html->url('/users/logout', true);?>">Logout</a></div>
 </div>

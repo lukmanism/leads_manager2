@@ -8,7 +8,7 @@ if(!isset($_POST['submitloadreport'])):
     foreach ($campaigns as $c_id => $c_name):
         echo '<label><input type="checkbox" name="campaign_id[]" value="'.$c_id.'" />'.$c_name.'</label>';
     endforeach;
-    echo '<input type="submit" class="submit" name="submitloadreport" value="Load Report(s)" /></form></fieldset>';
+    echo '<div><input type="submit" class="submit" name="submitloadreport" value="Load Report(s)" /></div></form></fieldset>';
 else:
     echo $this->Html->css('jquery.dataTables');
     echo $this->Html->script('jquery.dataTables.min');
@@ -126,7 +126,19 @@ endif;
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
         <li><?php echo $this->Html->link(__('List Leads'), array('controller' => 'leads', 'action' => 'index')); ?> </li>
-        <li><?php echo $this->Html->link(__('List Logs'), array('controller' => 'logs', 'action' => 'index')); ?> </li>
-        <li><a href="<?=$this->Html->url('/users/logout', true);?>">Logout</a></li>
+        <li><?php echo $this->Html->link(__('List Logs'), array('controller' => 'logs', 'action' => 'index')); ?> </li>  
 	</ul>
+
+    <? if($user['Group']['name'] == 'administrators'): ?>
+    <h3><?php echo __('Admin Actions'); ?></h3>
+    <ul>
+        <li><?php echo $this->Html->link(__('List Users'), array('controller' => 'users', 'action' => 'index')); ?> </li>
+        <li><?php echo $this->Html->link(__('List Campaigns'), array('controller' => 'campaigns', 'action' => 'index')); ?> </li>
+        <li><?php echo $this->Html->link(__('List Groups'), array('controller' => 'groups', 'action' => 'index')); ?> </li>
+        <li><a href="<?=$this->Html->url('/admin/acl', true);?>">ACL</a></li>
+    </ul>
+    <? endif; ?>
+    <!-- Logout -->
+    <div class="logout"><a href="<?=$this->Html->url('/users/logout', true);?>">Logout</a></div>
+
 </div>

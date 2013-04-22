@@ -13,40 +13,6 @@ class Lead extends AppModel {
  *
  * @var array
  */
-	// public $validate = array(
-	// 	'campaign_id' => array(
-	// 		'numeric' => array(
-	// 			'rule' => array('numeric'),
-	// 			//'message' => 'Your custom message here',
-	// 			//'allowEmpty' => false,
-	// 			//'required' => false,
-	// 			//'last' => false, // Stop validation after this rule
-	// 			//'on' => 'create', // Limit validation to 'create' or 'update' operations
-	// 		),
-	// 	),
-	// 	'email' => array(
-	// 		'email' => array(
-	// 			'rule' => array('email'),
-	// 			//'message' => 'Your custom message here',
-	// 			//'allowEmpty' => false,
-	// 			//'required' => false,
-	// 			//'last' => false, // Stop validation after this rule
-	// 			//'on' => 'create', // Limit validation to 'create' or 'update' operations
-	// 		),
-	// 	),
-	// 	'ip' => array(
-	// 		'notempty' => array(
-	// 			'rule' => array('notempty'),
-	// 			//'message' => 'Your custom message here',
-	// 			//'allowEmpty' => false,
-	// 			//'required' => false,
-	// 			//'last' => false, // Stop validation after this rule
-	// 			//'on' => 'create', // Limit validation to 'create' or 'update' operations
-	// 		),
-	// 	),
-	// );
-
-	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 /**
  * belongsTo associations
@@ -96,9 +62,9 @@ class Lead extends AppModel {
 	public function postExternal ($posturl){
         $postdata = file_get_contents('php://input');      
         $posted = curl_init();//open connection    
-        curl_setopt($posted,CURLOPT_URL,$posturl);//set the url, number of POST vars, POST data
+        curl_setopt($posted,CURLOPT_URL,$posturl); #set the url, number of POST vars, POST data
         curl_setopt($posted, CURLOPT_FRESH_CONNECT, true);
-		curl_setopt($posted, CURLOPT_TIMEOUT_MS, 1);
+		// curl_setopt($posted, CURLOPT_TIMEOUT_MS, 1); #False curl error reporting when enabled
         curl_setopt($posted,CURLOPT_POSTFIELDS,$postdata);     
         $result = curl_exec($posted);//execute post 
         $curl_errno = curl_errno($posted); // Added logger
@@ -117,12 +83,12 @@ class Lead extends AppModel {
           if(empty($result)) { // echo "No data received.";
             $logs = array(
                 "logs"          => $cleanout,
-                "type"          => 'NOTICE'
+                "type"          => 'CURL NOTICE'
             );   
           } else { // echo "Data received: $result\n";
             $logs = array(
                 "logs"          => $cleanout,
-                "type"          => 'WARNING'
+                "type"          => 'NOTICE'
             );   
           }
         }
