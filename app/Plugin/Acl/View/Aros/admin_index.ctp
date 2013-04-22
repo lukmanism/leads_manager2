@@ -29,5 +29,5 @@
     </ul>
     <? #endif; ?>
     <!-- Logout -->
-    <div class="logout"><a href="<?=$this->Html->url('../../users/logout', true);?>">Logout</a></div>
+    <div class="logout"><a href="<?=$this->Html->url('../../../users/logout', true);?>">Logout</a></div>
 </div>
