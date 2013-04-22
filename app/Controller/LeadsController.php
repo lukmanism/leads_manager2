@@ -21,6 +21,7 @@ class LeadsController extends AppController {
 	public function index() {
         $this->Campaign = ClassRegistry::init('Campaign');
         $user = $this->Auth->user();
+        $this->set('user', $user);
         $group = $user['Group']['name'];
 
         if(!isset($_POST['submitloadreport'])){
@@ -95,21 +96,6 @@ class LeadsController extends AppController {
     }    
 
 /**
- * view method
- *
- * @throws NotFoundException
- * @param string $id
- * @return void
- */
-	public function view($id = null) {
-		if (!$this->Lead->exists($id)) {
-			throw new NotFoundException(__('Invalid lead'));
-		}
-		$options = array('conditions' => array('Lead.' . $this->Lead->primaryKey => $id));
-		$this->set('lead', $this->Lead->find('first', $options));
-	}
-
-/**
  * add method
  *
  * @return void
@@ -158,8 +144,8 @@ class LeadsController extends AppController {
 	                'Lead'  => array(
 	                "lead"     		=> json_encode($repost), # compact lead values into one field
 	                "email"     	=> $email, 
-	                "campaign_id"  => $campaign_id, 
-	                "ip"       	=> $client_ip
+	                "campaign_id"  	=> $campaign_id, 
+	                "ip"       		=> $client_ip
 	            ));
 
 	                $this->Lead->create();
@@ -171,13 +157,16 @@ class LeadsController extends AppController {
 		                    $logs = array( 
 		                        'Log'           => array(
 		                        'leads_id'      => $this->Lead->id,
-		                        'campaign_id'   => $campaign,
+		                        'campaign_id'   => $campaign_id,
 		                        'referer'       => str_replace('http://', '', $_SERVER['HTTP_REFERER']),
 		                        'ip'            => $client_ip,
 		                        'logs'          => trim($log['logs']),
 		                        'type'          => $log['type']
 		                    ));
-		                    $this->Log->saveAll($logs['Log']); #save to logs
+		                    // var_dump($logs);
+		                    if(!empty($log['logs'])){
+		                    	$this->Log->saveAll($logs, array('validate' => false)); #save to logs
+		                    }
 		                }
 	                    $message = array(array('module' => array('insert'),'status' => array('success')));
 
@@ -209,52 +198,6 @@ class LeadsController extends AppController {
 	    }
 	}
 
-/**
- * edit method
- *
- * @throws NotFoundException
- * @param string $id
- * @return void
- */
-	public function edit($id = null) {
-		if (!$this->Lead->exists($id)) {
-			throw new NotFoundException(__('Invalid lead'));
-		}
-		if ($this->request->is('post') || $this->request->is('put')) {
-			if ($this->Lead->save($this->request->data)) {
-				$this->Session->setFlash(__('The lead has been saved'));
-				$this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The lead could not be saved. Please, try again.'));
-			}
-		} else {
-			$options = array('conditions' => array('Lead.' . $this->Lead->primaryKey => $id));
-			$this->request->data = $this->Lead->find('first', $options);
-		}
-		$campaigns = $this->Lead->Campaign->find('list');
-		$this->set(compact('campaigns'));
-	}
-
-/**
- * delete method
- *
- * @throws NotFoundException
- * @param string $id
- * @return void
- */
-	public function delete($id = null) {
-		$this->Lead->id = $id;
-		if (!$this->Lead->exists()) {
-			throw new NotFoundException(__('Invalid lead'));
-		}
-		$this->request->onlyAllow('post', 'delete');
-		if ($this->Lead->delete()) {
-			$this->Session->setFlash(__('Lead deleted'));
-			$this->redirect(array('action' => 'index'));
-		}
-		$this->Session->setFlash(__('Lead was not deleted'));
-		$this->redirect(array('action' => 'index'));
-	}
 
 
 }

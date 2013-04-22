@@ -1,5 +1,15 @@
 <div class="logs index">
 	<h2><?php echo __('Logs'); ?></h2>
+<?
+if(!isset($_POST['submitloadreport'])):
+
+    echo '<h1>Select report(s) to load</h1><fieldset><form enctype="multipart/form-data" method="post" action="" name="loadreport">';
+    foreach ($campaigns as $c_id => $c_name):
+        echo '<label><input type="checkbox" name="campaign_id[]" value="'.$c_id.'" />'.$c_name.'</label>';
+    endforeach;
+    echo '<div><input type="submit" class="submit" name="submitloadreport" value="Load Report(s)" /></div></form></fieldset>';
+else:
+?>	
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><?php echo $this->Paginator->sort('id'); ?></th>
@@ -23,13 +33,21 @@
 		</td>
 		<td><?php echo h($log['Log']['referer']); ?>&nbsp;</td>
 		<td><?php echo h($log['Log']['ip']); ?>&nbsp;</td>
-		<td><?php echo h($log['Log']['logs']); ?>&nbsp;</td>
+		<td><?php 
+		echo $this->Text->truncate(
+		    $log['Log']['logs'],
+		    30,
+		    array(
+		        'ellipsis' => '...',
+		        'exact' => false
+		    )
+		);
+
+		?>&nbsp;</td>
 		<td><?php echo h($log['Log']['type']); ?>&nbsp;</td>
 		<td><?php echo h($log['Log']['created']); ?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('View'), array('action' => 'view', $log['Log']['id'])); ?>
-			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $log['Log']['id'])); ?>
-			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $log['Log']['id']), null, __('Are you sure you want to delete # %s?', $log['Log']['id'])); ?>
 		</td>
 	</tr>
 <?php endforeach; ?>
@@ -47,12 +65,28 @@
 		echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
 	?>
 	</div>
+<?
+endif;     
+?>
 </div>
+
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
         <li><?php echo $this->Html->link(__('List Leads'), array('controller' => 'leads', 'action' => 'index')); ?> </li>
         <li><?php echo $this->Html->link(__('List Logs'), array('controller' => 'logs', 'action' => 'index')); ?> </li>
-        <li><a href="<?=$this->Html->url('/users/logout', true);?>">Logout</a></li>
 	</ul>
+
+	<? if($user['Group']['name'] == 'administrators'): ?>
+    <h3><?php echo __('Admin Actions'); ?></h3>
+    <ul>
+        <li><?php echo $this->Html->link(__('List Users'), array('controller' => 'users', 'action' => 'index')); ?> </li>
+        <li><?php echo $this->Html->link(__('List Campaigns'), array('controller' => 'campaigns', 'action' => 'index')); ?> </li>
+        <li><?php echo $this->Html->link(__('List Groups'), array('controller' => 'groups', 'action' => 'index')); ?> </li>
+        <li><a href="<?=$this->Html->url('/admin/acl', true);?>">ACL</a></li>
+
+    </ul>
+	<? endif; ?>
+    <!-- Logout -->
+    <div class="logout"><a href="<?=$this->Html->url('/users/logout', true);?>">Logout</a></div>
 </div>

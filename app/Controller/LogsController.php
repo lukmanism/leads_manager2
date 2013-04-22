@@ -13,8 +13,26 @@ class LogsController extends AppController {
  * @return void
  */
 	public function index() {
-		$this->Log->recursive = 0;
-		$this->set('logs', $this->paginate());
+        $this->Campaign = ClassRegistry::init('Campaign');
+        $user = $this->Auth->user();
+        $this->set('user', $user);
+        $group = $user['Group']['name'];
+
+        if(!isset($_POST['submitloadreport'])){
+	        if($group == 'administrators') {
+	        	$campaigns = $this->Campaign->find('list');
+	            $this->set('campaigns', $campaigns);
+	        } else {
+	        	$campaigns = $this->Campaign->find('list', array('conditions' => array('user_id' => $user['id'])));   
+	            $this->set('campaigns', $campaigns);
+	        }
+        } else {
+            $campaign_ids = $_POST['campaign_id'];
+            $this->paginate = array(
+		        'conditions' => array('Log.campaign_id' => $campaign_ids)
+		    );	        
+	        $this->set('logs', $this->paginate('Log'));
+        }
 	}
 
 /**
@@ -30,73 +48,5 @@ class LogsController extends AppController {
 		}
 		$options = array('conditions' => array('Log.' . $this->Log->primaryKey => $id));
 		$this->set('log', $this->Log->find('first', $options));
-	}
-
-/**
- * add method
- *
- * @return void
- */
-	public function add() {
-		if ($this->request->is('post')) {
-			$this->Log->create();
-			if ($this->Log->save($this->request->data)) {
-				$this->Session->setFlash(__('The log has been saved'));
-				$this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The log could not be saved. Please, try again.'));
-			}
-		}
-		$leads = $this->Log->Lead->find('list');
-		$campaigns = $this->Log->Campaign->find('list');
-		$this->set(compact('leads', 'campaigns'));
-	}
-
-/**
- * edit method
- *
- * @throws NotFoundException
- * @param string $id
- * @return void
- */
-	public function edit($id = null) {
-		if (!$this->Log->exists($id)) {
-			throw new NotFoundException(__('Invalid log'));
-		}
-		if ($this->request->is('post') || $this->request->is('put')) {
-			if ($this->Log->save($this->request->data)) {
-				$this->Session->setFlash(__('The log has been saved'));
-				$this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The log could not be saved. Please, try again.'));
-			}
-		} else {
-			$options = array('conditions' => array('Log.' . $this->Log->primaryKey => $id));
-			$this->request->data = $this->Log->find('first', $options);
-		}
-		$leads = $this->Log->Lead->find('list');
-		$campaigns = $this->Log->Campaign->find('list');
-		$this->set(compact('leads', 'campaigns'));
-	}
-
-/**
- * delete method
- *
- * @throws NotFoundException
- * @param string $id
- * @return void
- */
-	public function delete($id = null) {
-		$this->Log->id = $id;
-		if (!$this->Log->exists()) {
-			throw new NotFoundException(__('Invalid log'));
-		}
-		$this->request->onlyAllow('post', 'delete');
-		if ($this->Log->delete()) {
-			$this->Session->setFlash(__('Log deleted'));
-			$this->redirect(array('action' => 'index'));
-		}
-		$this->Session->setFlash(__('Log was not deleted'));
-		$this->redirect(array('action' => 'index'));
 	}
 }
