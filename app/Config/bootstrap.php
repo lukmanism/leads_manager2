@@ -88,6 +88,11 @@ Cache::config('default', array('engine' => 'File'));
  *
  * ));
  */
+// App::build(array(
+//     'pluginPath'                    => array('/home/leads/public_html/app/Plugin')
+// ));
+
+
 Configure::write('Dispatcher.filters', array(
 	'AssetDispatcher',
 	'CacheDispatcher'
@@ -107,6 +112,6 @@ CakeLog::config('error', array(
 	'types' => array('warning', 'error', 'critical', 'alert', 'emergency'),
 	'file' => 'error',
 ));
-CakePlugin::load('AclExtras');
 
+CakePlugin::load('AclExtras');
 CakePlugin::load('Acl');
