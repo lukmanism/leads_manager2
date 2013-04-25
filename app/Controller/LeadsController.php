@@ -24,7 +24,7 @@ class LeadsController extends AppController {
         $this->set('user', $user);
         $group = $user['Group']['name'];
 
-        if(!isset($_POST['submitloadreport'])){
+        if(!isset($_GET['cid'])){
 	        if($group == 'administrators') {
 	        	$campaigns = $this->Campaign->find('list');
 	            $this->set('campaigns', $campaigns);
@@ -33,55 +33,28 @@ class LeadsController extends AppController {
 	            $this->set('campaigns', $campaigns);
 	        }
         } else {
-            $campaign_ids = $_POST['campaign_id'];
+            $campaign_ids = explode('.', $_GET['cid']);
             $leads_header = $this->Lead->find('first', array('conditions' => array('Lead.campaign_id' => $campaign_ids)));
 	        $leads = json_decode($leads_header['Lead']['lead']);
 	        $leads = get_object_vars($leads);
 	        $leads = array_keys($leads);
         	$rows   = array();
-        	$row    = array('id');
+        	$row    = array();
 
 	        foreach ($leads as $key => $value) {
 	            array_push($row, $value);
 	        }           
-	        array_push($row, 'campaign', 'ip', 'created');
 	        array_push($rows, $row);
-            $this->set('campaignview', $rows);
-            $this->set('campaign_id', $campaign_ids);
+            $this->set('cheader', $rows);
+            // $this->set('campaign_id', $campaign_ids);
+
+            $this->paginate = array(
+		        'conditions' => array('Lead.campaign_id' => $campaign_ids),
+         		'order' => array('Lead.created' => 'DESC')
+		    );	        
+	        $this->set('leads', $this->paginate('Lead'));
         }
 	}
-    
-    public function ajax() { 
-        $this->Campaign = ClassRegistry::init('Campaign');
-        $this->autoRender = false; 
-        $user = $this->Auth->user();
-        $group = $user['Group']['name'];
-        $c_id = stristr($_GET['campaign_id'], ',') ? explode(',', $_GET['campaign_id']): $_GET['campaign_id'];
-
-        if($group == 'administrators') {
-        	$campaigns = $this->Campaign->find('list');
-        	@$incomings = $this->Lead->find('all', array('conditions' => array('campaign_id' => $c_id)));
-        } elseif($group == 'managers') {
-        	$campaigns = $this->Campaign->find('list', array('conditions' => array('user_id' => $user['id'])));
-        	@$incomings = $this->Lead->find('all', array('conditions' => array('campaign_id' => $c_id)));
-        }
-
-        $rows   = array();
-        foreach ($incomings as $key => $incoming ):            
-	        $leads  = json_decode($incoming['Lead']['lead']); 
-	        $row    = array($incoming['Lead']['id']);
-
-		        foreach ($leads as $key2 => $lead) {
-		            array_push($row, $lead);
-		        }           
-	        array_push($row, $incoming['Lead']['campaign_id'], $incoming['Lead']['ip'], $incoming['Lead']['created']);
-	        array_push($rows, $row);
-        endforeach;
-
-        $json = isset($rows)? json_encode($rows) : '';
-        echo '{ "aaData": '.$json.'}';
-    }
-
 
     public function csv() {
 		$date = date('Ymd'); 
