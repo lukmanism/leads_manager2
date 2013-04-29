@@ -1,0 +1,121 @@
+<html>
+<!--
+/*!
+*
+* Bancha Project : Seamlessly integrates CakePHP with ExtJS and Sencha Touch (http://banchaproject.org)
+* Copyright 2011-2012 StudioQ OG
+*
+* Licensed under The MIT License
+* Redistributions of files must retain the above copyright notice.
+*
+* @package Bancha
+* @copyright Copyright 2011-2012 StudioQ OG
+* @link http://banchaproject.org Bancha Project
+* @since Bancha v 0.2.0
+* @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+* @author Roland Schuetz <mail@rolandschuetz.at>
+* @version Bancha v 1.1.0
+*
+* For more information go to http://banchaproject.org
+*/
+-->
+<head>
+<title>Bancha Project - The Power of ExtJS and CakePHP</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<link href='http://fonts.googleapis.com/css?family=Droid+Serif:regular,bold' rel='stylesheet' type='text/css' />
+<!-- 1140px Grid styles for IE -->
+<!--[if lte IE 9]><link rel="stylesheet" href="http://banchaproject.org//tl_files/Bancha/styles/ie.css" type="text/css" media="screen" /><![endif]-->
+<!-- The 1140px Grid - http://cssgrid.net/ -->
+<link rel="stylesheet" href="http://banchaproject.org//tl_files/Bancha/styles/1140.css" type="text/css" media="screen" />
+<!--css3-mediaqueries-js - http://code.google.com/p/css3-mediaqueries-js/ - Enables media queries in some unsupported browsers-->
+<script type="text/javascript" src="http://banchaproject.org//tl_files/Bancha/scripts/css3-mediaqueries.js"></script>
+<link rel="stylesheet" href="http://banchaproject.org//tl_files/Bancha/styles/master.css" type="text/css" media="screen" />
+<meta name="robots" content="index,follow" />
+
+
+<!-- sample specific css -->
+<link rel="stylesheet" href="css/resources/css/ext-all.css" type="text/css">
+<link rel="stylesheet" href="css/samples.css" type="text/css">
+<!-- eo sample specific css -->
+
+
+</head>
+<body id="top" style="text-align:center;">
+<div class="wrapper">
+    <br />
+    <a href="http://banchaproject.org/"><img src="http://banchaproject.org/tl_files/Bancha/images/logo.png" alt="Bancha" /></a>
+    <br /><br />
+
+<h1>Bancha Remote Filtering</h1>
+
+    <p><br/>
+        ExtJS/Sencha Touch stores can easily be remotely filtered, just set the <i>remoteFilter</i> config to <i>true</i> and filter, <br/>
+        e.g. with <i>store.filter('published',true);</i>. Bancha transforms this into a Bancha request, sends it to the server, <br />
+        there it configures the PaginationComponent and filters without any work by the developer.<br/>
+        See the <a href="https://github.com/Bancha/BanchaTestProject/blob/master/webroot/js/remote-filter-samples.js#L34" target="_blank">javascript code</a> of this example.
+        <br /><br /><br/>
+    </p>
+
+    <code class="align-left" style="padding-left: 60px; margin-top: 5px">
+        var store = Ext.create('Ext.data.Store', {<br />
+        &nbsp;&nbsp;&nbsp;&nbsp;model: Bancha.getModel('Article'),<br />
+        &nbsp;&nbsp;&nbsp;&nbsp;remoteFilter: true // activate remote filering<br />
+        });<br />
+        store.filter('published', true); // just use any remote filtering<br />
+        store.load();
+    </code>
+    <div id="published-articles"></div>
+    <br /><br />
+    <code class="align-left" style="padding-left: 60px; margin-top: 5px">
+        var store = Ext.create('Ext.data.Store', {<br />
+        &nbsp;&nbsp;&nbsp;&nbsp;model: Bancha.getModel('Article'),<br />
+        &nbsp;&nbsp;&nbsp;&nbsp;remoteFilter: true // activate remote filering<br />
+        });<br />
+        store.filter('title', 'Titel 01'); // just use any remote filtering<br />
+        store.load();
+    </code>
+    <div id="title-01-articles"></div>
+
+    <br />
+
+    <!-- for footer alignment -->
+<div class="push"></div>
+</div>
+<div class="footer">
+<small>&copy; 2011-2012 StudioQ OG. <a href="http://banchaproject.org/imprint.html">Imprint</a>. Icons by <a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">FamFamFam</a>.</small>
+</div>
+
+
+<!-- include ExtJS -->
+
+
+<script type="text/javascript" src="js/ext-all.js"></script>
+
+
+
+<!-- include Bancha and the remote API -->
+<script type="text/javascript" src="Bancha/js/Bancha.js"></script>
+<script type="text/javascript" src="bancha-api/models/all.js"></script>
+
+<!-- include sample code -->
+<script type="text/javascript" src="js/remote-filter-samples.js"></script>
+
+<!-- Add a feedback widget -->
+<script type="text/javascript">
+  var uvOptions = {};
+  (function() {
+    var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;
+    uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/0UXfPisT7dSYfaE0il292w.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
+  })();
+</script>
+
+<!-- add some analytics -->
+<script type="text/javascript">if(document.location.href.substr(0,16)!=="http://localhost" && document.location.href.substr(0,17)!=="https://localhost") {var _gaq=_gaq||[];_gaq.push(["_setAccount","UA-10118336-4"]);_gaq.push(["_trackPageview"]);(function(){var b=document.createElement("script");b.type="text/javascript";b.async=true;b.src=("https:"==document.location.protocol?"https://ssl":"http://www")+".google-analytics.com/ga.js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(b,a)})();}</script>
+
+</body>
+</html>
