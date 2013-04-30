@@ -115,3 +115,4 @@ CakeLog::config('error', array(
 
 CakePlugin::load('AclExtras');
 CakePlugin::load('Acl');
+// CakePlugin::load('SearchPagination');
