@@ -49,12 +49,7 @@ class LeadsController extends AppController {
             // $this->set('campaign_id', $campaign_ids);
 
             $this->paginate = array(
-<<<<<<< HEAD
-		        'conditions' => array('Lead.campaign_id' => $campaign_ids), #add search string
-    			// 'fields' => array('Model.field', 'DISTINCT Model.field'),
-=======
 		        'conditions' => array('Lead.campaign_id' => $campaign_ids),
->>>>>>> dc8b754e38f67dc9d24c47952ba304266e5e7030
          		'order' => array('Lead.created' => 'DESC')
 		    );	        
 	        $this->set('leads', $this->paginate('Lead'));
