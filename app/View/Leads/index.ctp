@@ -1,77 +1,55 @@
+<?
+    echo $this->Html->css('resources/css/ext-all');
+    echo $this->Html->script('ext-all');
+    // echo $this->Html->script('ext');
+    echo $this->Html->script('src/ux/exporter/downloadify.min');
+    echo $this->Html->script('src/ux/exporter/swfobject');
+?>
+<script type="text/javascript">
+    Ext.Loader.setConfig({enabled: true});
+    Ext.require([
+        'Ext.grid.*',
+        'Ext.data.*',
+        'Ext.ux.grid.FiltersFeature',
+        'Ext.toolbar.Paging',
+        'Ext.ux.ajax.JsonSimlet'
+    ]);
+
+    Ext.define('Product', { extend: 'Ext.data.Model', 
+        uses: [
+        'Ext.ux.exporter.Exporter'
+    ],
+        fields: [<?
+        foreach ($schema as $key => $value) {
+            echo "{ name: '$key', type: '$value[type]' },";
+        } ?>]
+    });
+
+    Ext.onReady(function(){
+        Ext.QuickTips.init();
+        var url = { remote: 'leads/ajax?model=leads' }; // loadmodel
+        var store = Ext.create('Ext.data.JsonStore', { autoDestroy: true, model: 'Product', proxy: { type: 'ajax', url: (url.remote), reader: { type: 'json', root: 'data', idProperty: 'id', totalProperty: 'total'}}, remoteSort: false, sorters: [{ property: 'id', direction: 'DESC'}], pageSize: 20 });
+        var filters = { ftype: 'filters', encode: false, local: false, filters: [{ type: 'numeric', dataIndex: 'id'}] };
+        var createColumns = function (finish, start) {
+            var columns = [<?
+            foreach ($schema as $key => $value) {
+                echo "{ dataIndex: '$key', text: '".ucfirst($key)."', filterable: true, width: 50},";
+            }
+            ?>];
+            return columns.slice(start || 0, finish);
+        };   
+
+        var grid = Ext.create('Ext.grid.Panel', { border: false, store: store, columns: createColumns(100), loadMask: true, features: [filters], dockedItems: [Ext.create('Ext.toolbar.Paging', { dock: 'bottom', store: store, displayInfo: true, displayMsg: '{0} - {1} of <b>{2}</b> records' })], emptyText: 'No Matching Records', renderTo: 'renders', height: 600, width: '100%', layout: 'fit', items: grid});
+        grid.child('pagingtoolbar').add(['->', 
+            { text: 'Clear Filter Data', handler: function () { grid.filters.clearFilters();}}
+            ]);
+        store.load();
+    });
+</script>
 <div class="logs index">
     <h2><?php echo __('Leads'); ?></h2>
-<?
-if(!isset($_GET['cid'])):
-    echo '<h1>Select report(s) to load</h1><fieldset><form method="get" action="" name="loadreport">';
-    foreach ($campaigns as $c_id => $c_name):
-        echo '<label><input type="checkbox" class="campaign" value="'.$c_id.'" />'.$c_name.'</label>';
-    endforeach;
-    echo '<input type="hidden" class="cid" name="cid" value="" />';
-    echo '<div><input type="submit" class="submit" value="Load Report(s)" /></div></form></fieldset>';
-?>
-    <script type="text/javascript">
-    $('.submit').on('click', function() {
-        var cid = '';
-        $('.campaign').each(function(i,e) {
-            if ($(e).is(':checked')) {
-                var comma = cid.length===0?'':'.';
-                cid += (comma+e.value);
-            }
-        });
-        $('.cid').val(cid);
-    });
-    </script>
-<?
+    <div id="renders"></div>
 
-else:
-?>  
-    <table cellpadding="0" cellspacing="0">
-    <tr>
-    <th><?php echo $this->Paginator->sort('id'); ?></th>
-<?
-    foreach ($cheader[0] as $value) {
-        echo '<th>'.str_replace('_',' ',$value).'</th>';
-    }
-?>
-    <th><?php echo $this->Paginator->sort('Campaign'); ?></th>
-    <th><?php echo $this->Paginator->sort('Email'); ?></th>
-    <th><?php echo $this->Paginator->sort('IP'); ?></th>
-    <th><?php echo $this->Paginator->sort('Created'); ?></th>
-    </tr>
-    <?php foreach ($leads as $lead): ?>
-    <tr>
-        <td><?php echo h($lead['Lead']['id']); ?>&nbsp;</td>
-<?
-    $leads = json_decode($lead['Lead']['lead']);
-    foreach (@$leads as $leadkey => $leadval) {
-        echo "<td>$leadval</td>";
-    }
-?>
-        <td>
-            <?php echo $this->Html->link($lead['Campaign']['name'], array('controller' => 'campaigns', 'action' => 'view', $lead['Campaign']['id'])); ?>
-        </td>
-        <td><?php echo h($lead['Lead']['email']); ?>&nbsp;</td>
-        <td><?php echo h($lead['Lead']['ip']); ?>&nbsp;</td>
-        <td><?php echo h($lead['Lead']['created']); ?>&nbsp;</td>
-    </tr>
-<?php endforeach; ?>
-    </table>
-    <p>
-    <?php
-    echo $this->Paginator->counter(array(
-    'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
-    ));
-    ?>  </p>
-    <div class="paging">
-    <?php
-        echo $this->Paginator->prev('< ' . __('previous'), array(), null, array('class' => 'prev disabled'));
-        echo $this->Paginator->numbers(array('separator' => ''));
-        echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
-    ?>
-    </div>
-<?
-endif;     
-?>
 </div>
 
 <div class="actions">

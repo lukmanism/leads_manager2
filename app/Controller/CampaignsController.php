@@ -6,10 +6,6 @@ App::uses('AppController', 'Controller');
  * @property Campaign $Campaign
  */
 class CampaignsController extends AppController {
-    public function beforeFilter() {
-        parent::beforeFilter();
-        $this->Auth->allow();
-    }
 /**
  * index method
  *
@@ -17,105 +13,10 @@ class CampaignsController extends AppController {
  */
 	public function index() {
         $this->set('user', $this->Auth->user());
-		// $this->Campaign->recursive = 0;
-		// $this->set('campaigns', $this->paginate());
-        // collect request parameters
+        $db = $this->Campaign->getDataSource();
+        $db->listSources();
+        $this->set('schema', $db->describe('campaigns'));
 	}
-
-    public function ajax() {
-        $this->autoRender = false; 
-        $start  = isset($_REQUEST['start'])  ? $_REQUEST['start']  :  0;
-        $count  = isset($_REQUEST['limit'])  ? $_REQUEST['limit']  : 50;
-        $sort   = isset($_REQUEST['sort'])   ? json_decode($_REQUEST['sort'])   : null;
-        $filters = isset($_REQUEST['filter']) ? $_REQUEST['filter'] : null;
-
-        $sortProperty = $sort[0]->property; 
-        $sortDirection = $sort[0]->direction;
-
-        // GridFilters sends filters as an Array if not json encoded
-        if (is_array($filters)) {
-            $encoded = false;
-        } else {
-            $encoded = true;
-            $filters = json_decode($filters);
-        }
-
-        $where = ' 0 = 0 ';
-        $qs = '';
-
-        // loop through filters sent by client
-        if (is_array($filters)) {
-            for ($i=0;$i<count($filters);$i++){
-                $filter = $filters[$i];
-
-                // assign filter data (location depends if encoded or not)
-                if ($encoded) {
-                    $field = $filter->field;
-                    $value = $filter->value;
-                    $compare = isset($filter->comparison) ? $filter->comparison : null;
-                    $filterType = $filter->type;
-                } else {
-                    $field = $filter['field'];
-                    $value = $filter['data']['value'];
-                    $compare = isset($filter['data']['comparison']) ? $filter['data']['comparison'] : null;
-                    $filterType = $filter['data']['type'];
-                }
-
-                switch($filterType){
-                    case 'string' : $qs .= " AND ".$field." LIKE '%".$value."%'"; Break;
-                    case 'list' :
-                        if (strstr($value,',')){
-                            $fi = explode(',',$value);
-                            for ($q=0;$q<count($fi);$q++){
-                                $fi[$q] = "'".$fi[$q]."'";
-                            }
-                            $value = implode(',',$fi);
-                            $qs .= " AND ".$field." IN (".$value.")";
-                        }else{
-                            $qs .= " AND ".$field." = '".$value."'";
-                        }
-                    Break;
-                    case 'boolean' : $qs .= " AND ".$field." = ".($value); Break;
-                    case 'numeric' :
-                        switch ($compare) {
-                            case 'eq' : $qs .= " AND ".$field." = ".$value; Break;
-                            case 'lt' : $qs .= " AND ".$field." < ".$value; Break;
-                            case 'gt' : $qs .= " AND ".$field." > ".$value; Break;
-                        }
-                    Break;
-                    case 'date' :
-                        switch ($compare) {
-                            case 'eq' : $qs .= " AND ".$field." = '".date('Y-m-d',strtotime($value))."'"; Break;
-                            case 'lt' : $qs .= " AND ".$field." < '".date('Y-m-d',strtotime($value))."'"; Break;
-                            case 'gt' : $qs .= " AND ".$field." > '".date('Y-m-d',strtotime($value))."'"; Break;
-                        }
-                    Break;
-                }
-            }
-            $where .= $qs;
-        }
-
-        $query = "SELECT id, name, alias, external, method, user_id, note, created FROM campaigns WHERE ".$where;
-        $query .= " ORDER BY ".$sortProperty." ".$sortDirection;
-        $query .= " LIMIT ".$start.",".$count;
-        $result = $this->Campaign->query($query);
-
-            $countQuery = "SELECT COUNT(id) as count FROM campaigns WHERE ".$where;
-            $countQ = $this->Campaign->query($countQuery);
-            $count = $countQ[0][0]['count'];
-
-        $rows = array();
-        for ($i=0; $i < $count ; $i++) { 
-            if(!empty($result[$i]['campaigns']))
-            array_push($rows, $result[$i]['campaigns']);
-        }
-
-        echo json_encode(array(
-            "total"=>$count,
-            "data"=>$rows
-        ));
-    }
-
 
 /**
  * view method

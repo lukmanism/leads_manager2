@@ -24,36 +24,60 @@ class LeadsController extends AppController {
         $this->set('user', $user);
         $group = $user['Group']['name'];
 
-        if(!isset($_GET['cid'])){
-	        if($group == 'administrators') {
-	        	$campaigns = $this->Campaign->find('list');
-	            $this->set('campaigns', $campaigns);
-	        } else {
-	        	$campaigns = $this->Campaign->find('list', array('conditions' => array('user_id' => $user['id'])));   
-	            $this->set('campaigns', $campaigns);
-	        }
-        } else {
-            $campaign_ids = explode('.', $_GET['cid']);
-            $leads_header = $this->Lead->find('first', array('conditions' => array('Lead.campaign_id' => $campaign_ids)));
-	        $leads = json_decode($leads_header['Lead']['lead']);
-	        $leads = get_object_vars($leads);
-	        $leads = array_keys($leads);
-        	$rows   = array();
-        	$row    = array();
+      //   if(!isset($_GET['cid'])){
+	     //    if($group == 'administrators') {
+	     //    	$campaigns = $this->Campaign->find('list');
+	     //        $this->set('campaigns', $campaigns);
+	     //    } else {
+	     //    	$campaigns = $this->Campaign->find('list', array('conditions' => array('user_id' => $user['id'])));   
+	     //        $this->set('campaigns', $campaigns);
+	     //    }
+      //   } else {
+      //       $campaign_ids = explode('.', $_GET['cid']);
+      //       $leads_header = $this->Lead->find('first', array('conditions' => array('Lead.campaign_id' => $campaign_ids)));
+	     //    $leads = json_decode($leads_header['Lead']['lead']);
+	     //    $leads = get_object_vars($leads);
+	     //    $leads = array_keys($leads);
+      //   	$rows   = array();
+      //   	$row    = array();
 
-	        foreach ($leads as $key => $value) {
-	            array_push($row, $value);
-	        }           
-	        array_push($rows, $row);
-            $this->set('cheader', $rows);
-            // $this->set('campaign_id', $campaign_ids);
+	     //    foreach ($leads as $key => $value) {
+	     //        array_push($row, $value);
+	     //    }           
+	     //    array_push($rows, $row);
+      //       $this->set('cheader', $rows);
+      //       // $this->set('campaign_id', $campaign_ids);
 
-            $this->paginate = array(
-		        'conditions' => array('Lead.campaign_id' => $campaign_ids),
-         		'order' => array('Lead.created' => 'DESC')
-		    );	        
-	        $this->set('leads', $this->paginate('Lead'));
-        }
+      //       $this->paginate = array(
+		    //     'conditions' => array('Lead.campaign_id' => $campaign_ids),
+      //    		'order' => array('Lead.created' => 'DESC')
+		    // );	        
+	     //    $this->set('leads', $this->paginate('Lead'));
+      //   }
+
+
+    	$rows   = array();
+    	$row    = array();
+
+        $db = $this->Lead->getDataSource();
+        $db->listSources();
+        $schema = $db->describe('leads');
+
+		$leads_header = $this->Campaign->find('first', array('conditions' => array('Campaign.id' => 55), 'recursive' => -1));
+        $leads = json_decode($leads_header['Campaign']['rules']);
+        $leads = get_object_vars($leads);
+        $leads = array_keys($leads);
+
+        foreach ($schema as $key => $value) {
+        	if($key == 'lead'){
+				foreach ($leads as $key2 => $value2) {
+        			$row[$value2] = array("type" => "string");
+				} 
+        	} else {
+        		$row[$key] = $value;        		
+        	}
+        }        
+        $this->set('schema', $row);
 	}
 
     public function csv() {
