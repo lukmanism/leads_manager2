@@ -24,21 +24,36 @@ class LeadsController extends AppController {
         $this->set('user', $user);
         $group = $user['Group']['name'];
 
-        if(!isset($_GET['cid'])){
-	        if($group == 'administrators') {
-	        	$campaigns = $this->Campaign->find('list');
-	            $this->set('campaigns', $campaigns);
-	        } else {
-	        	$campaigns = $this->Campaign->find('list', array('conditions' => array('user_id' => $user['id'])));   
-	            $this->set('campaigns', $campaigns);
-	        }
+        $rlead = array('[', ']', '][');
+        $rleaded = array('%"', '"%', '": "');
+
+
+        if($group == 'administrators') {
+        	$campaigns = $this->Campaign->find('list');
+            $this->set('campaigns', $campaigns);
         } else {
-            $campaign_ids = explode('.', $_GET['cid']);
-            $leads_header = $this->Lead->find('first', array('conditions' => array('Lead.campaign_id' => $campaign_ids)));
-	        $leads = json_decode($leads_header['Lead']['lead']);
-	        $leads = get_object_vars($leads);
-	        $leads = array_keys($leads);
-        	$rows   = array();
+        	$campaigns = $this->Campaign->find('list', array('conditions' => array('user_id' => $user['id']), 'recursive' => -1));   
+            $this->set('campaigns', $campaigns);
+        }
+        	
+        $campaign_ids 	= (!empty($_GET['cid'])) 	? array('Lead.campaign_id' => explode('.', $_GET['cid'])) : '';
+
+        if(isset($_GET['mod'])) {
+        	$getid 		= (!empty($_GET['id'])) 		? array('Lead.id' => $_GET['id']) : '';
+        	$email 		= (!empty($_GET['email'])) 		? array('Lead.email' => $_GET['email']) : '';
+        	$ip 		= (!empty($_GET['ip'])) 		? array('Lead.ip' => $_GET['ip']) : '';
+        	$created 	= (!empty($_GET['created'])) 	? array('Lead.created' => $_GET['created']) : '';
+        	$lead 		= (!empty($_GET['lead'])) 		? array('Lead.lead LIKE' => str_replace($rlead, $rleaded, $_GET['lead'])) : '';
+        }
+
+        if(isset($_GET['cid'])){ # Report Results
+            $leads_header = $this->Lead->find('first', array(
+            	'conditions' => array($campaign_ids), 'recursive' => -1
+            	));
+	        $leads 	= json_decode($leads_header['Lead']['lead']);
+	        $leads 	= get_object_vars($leads);
+	        $leads 	= array_keys($leads);
+        	$rows	= array();
         	$row    = array();
 
 	        foreach ($leads as $key => $value) {
@@ -46,10 +61,9 @@ class LeadsController extends AppController {
 	        }           
 	        array_push($rows, $row);
             $this->set('cheader', $rows);
-            // $this->set('campaign_id', $campaign_ids);
 
             $this->paginate = array(
-		        'conditions' => array('Lead.campaign_id' => $campaign_ids),
+		        'conditions' => array(@$getid, @$lead, @$campaign_ids, @$email, @$ip, @$created),
          		'order' => array('Lead.created' => 'DESC')
 		    );	        
 	        $this->set('leads', $this->paginate('Lead'));

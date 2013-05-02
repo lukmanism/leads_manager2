@@ -137,6 +137,7 @@ table {
 	clear: both;
 	color: #333;
 	margin-bottom: 10px;
+	padding-right: 100px;
 	width: 100%;
 }
 th {
@@ -814,4 +815,41 @@ input.cancel {
 	border-top: 1px dotted #EAEBE7;
 	padding: 20px 0;
 	margin: 20px 0;
+}
+.form_hover {
+	position: relative;
+	width: 100%;
+	bottom: 0;
+}
+th:hover,
+th a:hover {
+	background-color: #333333;
+	color: #E2E2E2;
+}
+.form_hover form {
+	background-color: #333333;
+    border: 1px solid #000000 !important;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 4px 3px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.4);
+    color: #FFFFFF;
+    left: -4px;
+    padding: 10px;
+    position: absolute;
+    top: 5px;
+    width: 174px;
+}
+input.search {
+	font-size: 1.2em;
+    height: 1.5em;
+    width: 96%;
+}
+.form_hover input {
+	margin-top: 4px;
+	margin-bottom: 0px;
+}
+.form_hover label {
+	font-weight: normal;
+}
+.hide {
+	display: none;
 }
