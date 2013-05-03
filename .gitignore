@@ -19,3 +19,9 @@
 Icon?
 ehthumbs.db
 Thumbs.db
+
+# Removed by Eze #
+##################
+app/Config/database.php.default
+app/Controller/PagesController.php
+app/View/Pages/
