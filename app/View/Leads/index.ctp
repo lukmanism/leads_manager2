@@ -3,54 +3,6 @@
 ?>
 <div class="logs index">
     <h2><?php echo __('Leads'); ?></h2>
-
-<script type="text/javascript">
-    $(document).ready(function(){
-        $('.form_hover').hide();
-
-        $('.form_block').live({
-            mouseenter: function(){
-                $('.form_hover', this).show();            
-            },
-            mouseleave: function(){
-                $('.form_hover', this).hide();                
-            }            
-        });
-
-        $('.loadsearchlead').submit( function() {
-                var slead = $('.slead', this).val();
-                var sfield = $('.sfield', this).val();
-                var lead = '['+sfield+']['+slead+']';
-                $('.lead', this).val(lead);
-                // console.log(lead);
-            }
-        );
-
-        $('.csubmit').on('click', function() {
-            var cid = '';
-            $('.select_campaign').each(function(i,e) {
-                if ($(e).is(':checked')) {
-                    var comma = cid.length===0?'':'.';
-                    cid += (comma+e.value);
-                }
-            });
-            $('.ccid').val(cid);
-        });
-
-        $('a.csv_export').live({
-            click: function(){
-                var data = jQuery('#leadsreport').TableCSVExport();
-                var header = data.split("\n");
-                $('.export_this .csv').val(data);
-                $('.export_all .csvheader').val(header[0]);
-                $('ul.hide').show();
-                return false;
-            }
-        });
-
-    });
-</script>
-
 <?
 if(!isset($_GET['cid'])): # Select Report
     echo '<h1>Select report(s) to load</h1><fieldset><form method="get" action="" name="loadreport">';
@@ -127,6 +79,9 @@ endif;
     <ul>
         <li><?php echo $this->Html->link(__('List Leads'), array('controller' => 'leads', 'action' => 'index')); ?> </li>
         <li><?php echo $this->Html->link(__('List Logs'), array('controller' => 'logs', 'action' => 'index')); ?> </li>
+        <?
+        if(isset($_GET['cid'])){
+        ?>        
         <li><a href="#" class="csv_export">Export CSV</a></li>
         <ul class="hide">
             <li>
@@ -144,6 +99,7 @@ endif;
             </li> -->
         </ul>
         <? 
+        }
         if(isset($_GET['mod'])){
             echo '<li>';
             echo $this->Html->link(__('Reset Leads Filter'), array('controller' => 'leads', 'action' => '?cid='.$_GET['cid']));
@@ -165,22 +121,62 @@ endif;
     <div class="logout"><a href="<?=$this->Html->url('/users/logout', true);?>">Logout</a></div>
 </div>
 
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.form_hover').hide();
 
+        $('.form_block').live({
+            mouseenter: function(){
+                $('.form_hover', this).show();            
+            },
+            mouseleave: function(){
+                $('.form_hover', this).hide();                
+            }            
+        });
 
+        $('.loadsearchlead').submit( function() {
+                var slead = $('.slead', this).val();
+                var sfield = $('.sfield', this).val();
+                var lead = '['+sfield+']['+slead+']';
+                $('.lead', this).val(lead);
+                // console.log(lead);
+            }
+        );
 
+        $('.csubmit').on('click', function() {
+            var cid = '';
+            $('.select_campaign').each(function(i,e) {
+                if ($(e).is(':checked')) {
+                    var comma = cid.length===0?'':'.';
+                    cid += (comma+e.value);
+                }
+            });
+            $('.ccid').val(cid);
+        });
 
+        $('a.csv_export').live({
+            click: function(){
+                var data = jQuery('#leadsreport').TableCSVExport();
+                var header = data.split("\n");
+                $('.export_this .csv').val(data);
+                $('.export_all .csvheader').val(header[0]);
+                $('ul.hide').show();
+                return false;
+            }
+        });
 
-
-
+    });
+</script>
 
 <?
     function search_form($sfield, $svalue, $type = NULL) {
         $scid = $_GET['cid'];
         $form = '<div class="form_hover"><form name="loadsearch'.$type.'" class="loadsearch'.$type.'" action="" method="get">';
 
-        if(isset($svalue) && is_array($svalue)) { # checkbox
+        if(isset($svalue) && is_array($svalue)) { # checkbox campaign
             foreach ($svalue as $c_id => $c_name){
-                $form .= '<label><input type="checkbox" class="select_campaign" value="'.$c_id.'" />'.$c_name.'</label>';
+                $checked = (isset($_GET['cid']) && $_GET['cid'] == $c_id)? 'checked' : '';
+                $form .= '<label><input type="checkbox" class="select_campaign" value="'.$c_id.'" '.$checked.'/>'.$c_name.'</label>';
             }
             $form .= '<input type="hidden" class="ccid" name="cid" value="" /><input type="submit" class="csubmit" value="Load Report(s)" />';
         } elseif(isset($type)) { # text input for lead fields
