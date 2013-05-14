@@ -29,9 +29,6 @@ else: # Report Results
         <?php echo '<span>'.$this->Paginator->sort('Campaign').'</span>'.search_form('campaign', $campaigns); ?>
     </th>
     <th class="form_block">
-        <?php echo '<span>'.$this->Paginator->sort('Email').'</span>'.search_form('email', ''); ?>
-    </th>
-    <th class="form_block">
         <?php echo '<span>'.$this->Paginator->sort('IP').'</span>'.search_form('ip', ''); ?>
     </th>
     <th class="form_block">
@@ -50,7 +47,6 @@ else: # Report Results
         <td>
             <?php echo $this->Html->link($lead['Campaign']['name'], array('controller' => 'campaigns', 'action' => 'view', $lead['Campaign']['id'])); ?>
         </td>
-        <td><?php echo h($lead['Lead']['email']); ?>&nbsp;</td>
         <td><?php echo h($lead['Lead']['ip']); ?>&nbsp;</td>
         <td><?php echo h($lead['Lead']['created']); ?>&nbsp;</td>
     </tr>
@@ -114,6 +110,7 @@ endif;
         <li><?php echo $this->Html->link(__('List Users'), array('controller' => 'users', 'action' => 'index')); ?> </li>
         <li><?php echo $this->Html->link(__('List Campaigns'), array('controller' => 'campaigns', 'action' => 'index')); ?> </li>
         <li><?php echo $this->Html->link(__('List Groups'), array('controller' => 'groups', 'action' => 'index')); ?> </li>
+        <li><?php echo $this->Html->link(__('List Batch Emails'), array('controller' => 'emails', 'action' => 'index')); ?></li>
         <li><a href="<?=$this->Html->url('/admin/acl', true);?>">ACL</a></li>
     </ul>
     <? endif; ?>

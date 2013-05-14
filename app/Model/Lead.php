@@ -29,9 +29,9 @@ class Lead extends AppModel {
 		)
 	);
 
-	public function emailDuplicate($check,$verdict) { # checks email duplication (post array, true/false)
+    public function emailDuplicate($check,$verdict) { # checks email duplication (post array, true/false)
         $campaign = $_GET['campaign'];
-		$check = $this->emailSplitter($check);
+        $check = $this->emailSplitter($check);
         $result = $this->query("SELECT email FROM leads WHERE email = '".$check."' AND campaign_id = '".$campaign."' LIMIT 1");
         if(empty($result)) {
             return $verdict = 1;    
@@ -43,6 +43,14 @@ class Lead extends AppModel {
                     break;
                 }
         }
+    }
+
+    public function trackid() {
+        return true;
+    }
+
+	public function email() {
+        return true;
     }
 
     function emailFormat($email) { # checks email formatting

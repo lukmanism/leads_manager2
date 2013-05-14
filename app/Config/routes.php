@@ -28,7 +28,7 @@
  */
 	Router::connect('/', array('controller' => 'leads', 'action' => 'index'));
 	// Router::connect('/acls', array('plugin' => 'acls', 'controller' => 'AclsController', 'action' => 'index'));
-	// Router::parseExtensions('csv'); 
+	Router::parseExtensions('csv'); 
 /**
  * ...and connect the rest of 'Pages' controller's urls.
  */

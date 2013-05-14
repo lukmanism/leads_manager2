@@ -1,23 +1,56 @@
-<div class="groups index">
-	<h2><?php echo __('Groups'); ?></h2>
+<div class="emails index">
+	<h2><?php echo __('Batch Email Report'); ?></h2>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><?php echo $this->Paginator->sort('id'); ?></th>
-			<th><?php echo $this->Paginator->sort('name'); ?></th>
+			<th><?php echo $this->Paginator->sort('model'); ?></th>
+			<th><?php echo $this->Paginator->sort('user_id', 'From'); ?></th>
+			<th><?php echo $this->Paginator->sort('to'); ?></th>
+			<th><?php echo $this->Paginator->sort('subject'); ?></th>
 			<th><?php echo $this->Paginator->sort('created'); ?></th>
-			<th><?php echo $this->Paginator->sort('modified'); ?></th>
+			<th><?php echo $this->Paginator->sort('published'); ?></th>
 			<th class="actions"><?php echo __('Actions'); ?></th>
 	</tr>
-	<?php foreach ($groups as $group): ?>
+	<?php foreach ($emails as $email): ?>
 	<tr>
-		<td><?php echo h($group['Group']['id']); ?>&nbsp;</td>
-		<td><?php echo h($group['Group']['name']); ?>&nbsp;</td>
-		<td><?php echo h($group['Group']['created']); ?>&nbsp;</td>
-		<td><?php echo h($group['Group']['modified']); ?>&nbsp;</td>
+		<td><?php echo h($email['Email']['id']); ?>&nbsp;</td>
+		<td><?php 
+		$model = json_decode($email['Email']['model']); 
+		echo ucfirst($model->model);
+		?>&nbsp;</td>
+		<td>
+			<?php 
+			echo $this->Html->link($email['User']['username'], array('controller' => 'users', 'action' => 'view', $email['User']['id'])); 
+			?>
+		</td>
+		<td><?php 
+		echo $this->Text->truncate(
+		    $email['Email']['to'],
+		    30,
+		    array(
+		        'ellipsis' => '...',
+		        'exact' => true
+		    )
+		);
+		?>&nbsp;</td>
+		<td><?php 
+		echo $this->Text->truncate(
+		    $email['Email']['subject'],
+		    30,
+		    array(
+		        'ellipsis' => '...',
+		        'exact' => false
+		    )
+		);
+		?>&nbsp;</td>
+		<td><?php echo h($email['Email']['created']); ?>&nbsp;</td>
+		<td><?php 
+		echo ($email['Email']['published'] == 1)? 'True': 'False';
+		?>&nbsp;</td>
 		<td class="actions">
-			<?php echo $this->Html->link(__('View'), array('action' => 'view', $group['Group']['id'])); ?>
-			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $group['Group']['id'])); ?>
-			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $group['Group']['id']), null, __('Are you sure you want to delete # %s?', $group['Group']['id'])); ?>
+			<?php echo $this->Html->link(__('View'), array('action' => 'view', $email['Email']['id'])); ?>
+			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $email['Email']['id'])); ?>
+			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $email['Email']['id']), null, __('Are you sure you want to delete # %s?', $email['Email']['id'])); ?>
 		</td>
 	</tr>
 <?php endforeach; ?>
@@ -36,8 +69,9 @@
 	?>
 	</div>
 </div>
+
 <div class="actions">
-	<h3><?php echo __('Actions Edit'); ?></h3>
+	<h3><?php echo __('Batch Email Edit'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('New'), array('action' => 'add')); ?></li>
 	</ul>
@@ -60,3 +94,4 @@
     <!-- Logout -->
     <div class="logout"><a href="<?=$this->Html->url('/users/logout', true);?>">Logout</a></div>
 </div>
+

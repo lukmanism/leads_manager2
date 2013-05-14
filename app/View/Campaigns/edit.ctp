@@ -24,7 +24,6 @@
         'selected' => $method,
         'empty' => 'Please Select...'
     ));
-
 		echo $this->Form->input('note');
 	?>
 	</fieldset>
@@ -69,7 +68,8 @@ function fieldType($val,$x){
         "custom"        => "Custom",
         "email"         => "Email",
         "phone"         => "Phone",
-        "postal"        => "Postal"
+        "postal"        => "Postal",
+        "trackid"       => "Track ID"
     );
 
     $select ='<div class="row"><label>Field Type</label><select class="fieldtype" name="data[Campaign][rules]['.$x.'][fieldtype]" id="select'.$x.'">';
@@ -153,7 +153,7 @@ $("#add").click(function() {
     var intId = $("#buildyourform h3").length + 1;
     var fieldWrapper = $("<div class=\"fieldwrapper\" id=\"field" + intId + "\"/>");
     var fName = $("<div class=\"row first\"><label>Field Name</label><input type=\"text\" class=\"fieldname\" name=\"data[Campaign][rules]["+intId+"][fieldname]\" /></div>");
-    var fType = $("<div class=\"row\"><h3 class=\"number\">"+intId+"</h3><label>Required?</label><input class=\"required"+intId+"\" type=\"checkbox\" name=\"data[Campaign][rules]["+intId+"][required]\" value=\"notEmpty\"></div><div class=\"row\"><label>Field Type</label><select class=\"fieldtype\" name=\"data[Campaign][rules]["+intId+"][fieldtype]\" id=\"select" + intId + "\"><option value=\"alphaNumeric\">Alpha Numeric</option><option value=\"blank\">Blank</option><option value=\"custom\">Custom</option><option value=\"email\">Email</option><option value=\"text\" selected=\"selected\">Text</option><option value=\"phone\">Phone</option><option value=\"postal\">Postal</option></select></div><span class=\"properties\" id=\"row" + intId + "\"></span>");
+    var fType = $("<div class=\"row\"><h3 class=\"number\">"+intId+"</h3><label>Required?</label><input class=\"required"+intId+"\" type=\"checkbox\" name=\"data[Campaign][rules]["+intId+"][required]\" value=\"notEmpty\"></div><div class=\"row\"><label>Field Type</label><select class=\"fieldtype\" name=\"data[Campaign][rules]["+intId+"][fieldtype]\" id=\"select" + intId + "\"><option value=\"alphaNumeric\">Alpha Numeric</option><option value=\"blank\">Blank</option><option value=\"custom\">Custom</option><option value=\"email\">Email</option><option value=\"text\" selected=\"selected\">Text</option><option value=\"phone\">Phone</option><option value=\"postal\">Postal</option><option value=\"trackid\">Track ID</option></select></div><span class=\"properties\" id=\"row" + intId + "\"></span>");
     var removeButton = $("<input type=\"button\" class=\"remove\" value=\"-\" />");
     removeButton.click(function() {
         $(this).parent().remove();
@@ -179,9 +179,7 @@ $('.fieldtype').live('change', function(){
 
     var selected = $(this).val();
     var name = $(this).attr('name');
-
     var properties;
-
     var email = "<div class=\"row\"><label>No Duplicates?</label><input type=\"checkbox\" name=\"data[Campaign][rules]["+propid+"][fieldprop]\" value=\"emailDuplicate\"></div>";
     var custom = "<div class=\"row\"><label>Custom Rules<input type=\"text\" name=\"data[Campaign][rules]["+propid+"][fieldprop]\" value=\"\"></label></div>";
     var phone = "<div class=\"row\"><label>Phone Property</label><select class=\"phone\" name=\"data[Campaign][rules]["+propid+"][fieldprop]\"><option value=\"us\">United States</option><option value=\"others\">Others</option></select></div>";
@@ -201,6 +199,9 @@ $('.fieldtype').live('change', function(){
         break;
         case 'postal':
             properties = postal;
+        break;
+        case 'trackid':
+            properties = '';
         break;
     }
     $('#row'+propid).append(properties);
