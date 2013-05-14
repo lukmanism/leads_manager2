@@ -69,8 +69,10 @@ class CampaignsController extends AppController {
                     $rule = array('rule' => array('email', true), 'message' => 'Please supply a valid email address.');
                     array_push($allrules[$key['fieldname']], $rule);
                 }
-
-
+                if($key['fieldtype'] == 'trackid') {                    
+                    @$rule = array('rule' => array('trackid'), 'message' => 'Please supply a valid Track ID.');
+                    array_push($allrules[$key['fieldname']], $rule);
+                }
                 @$fieldtypearray['rule_format'] = (is_null($fieldtype))? '' : $fieldtype;
                 @$requiredarray['rule_required'] = (is_null($required))? '' : $required;
 
@@ -135,6 +137,10 @@ class CampaignsController extends AppController {
                 @$fieldtype = $this->Campaign->format($key['fieldtype'],@$key['fieldprop']);
                 if($key['fieldtype'] == 'email') {                    
                     @$rule = array('rule' => array('email', true), 'message' => 'Please supply a valid email address.');
+                    array_push($allrules[$key['fieldname']], $rule);
+                }
+                if($key['fieldtype'] == 'trackid') {                    
+                    @$rule = array('rule' => array('trackid'), 'message' => 'Please supply a valid Track ID.');
                     array_push($allrules[$key['fieldname']], $rule);
                 }
                 @$fieldtypearray['rule_format'] = (is_null($fieldtype))? '' : $fieldtype;

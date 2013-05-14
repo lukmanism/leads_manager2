@@ -6,14 +6,19 @@
 			<?php echo h($user['User']['id']); ?>
 			&nbsp;
 		</dd>
+		<dt><?php echo __('Name'); ?></dt>
+		<dd>
+			<?php echo h($user['User']['name']); ?>
+			&nbsp;
+		</dd>
 		<dt><?php echo __('Username'); ?></dt>
 		<dd>
 			<?php echo h($user['User']['username']); ?>
 			&nbsp;
 		</dd>
-		<dt><?php echo __('Password'); ?></dt>
+		<dt><?php echo __('Email'); ?></dt>
 		<dd>
-			<?php echo h($user['User']['password']); ?>
+			<?php echo h($user['User']['email']); ?>
 			&nbsp;
 		</dd>
 		<dt><?php echo __('Group'); ?></dt>
