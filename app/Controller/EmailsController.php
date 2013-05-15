@@ -1,12 +1,16 @@
 <?php
 App::uses('AppController', 'Controller');
-App::uses('CakeEmail', 'Network/Email');
 /**
  * Emails Controller
  *
  * @property Email $Email
  */
 class EmailsController extends AppController {
+
+	public function beforeFilter() {
+	    parent::beforeFilter();
+	    $this->Auth->allow('batch');
+	}
 
 /**
  * index method
@@ -105,81 +109,6 @@ class EmailsController extends AppController {
 		$this->redirect(array('action' => 'index'));
 	}
 
-
-	public function batch(){
-        $this->User = ClassRegistry::init('User');
-        // $this->layout = false;
-        // $this->render(false);
-		ini_set('max_execution_time', 10000); //increase max_execution_time to 10 min if data set is very large
-		date_default_timezone_set('America/Los_Angeles');
-		// $reportdate = date('Y-m-d');
-		$reportdate = date('2013-04-22');
-
-		$emails = $this->Email->find('all', array(
-			'conditions' => array('Email.published' => 1), # TEMP EMAIL ID
-			'recursive' => -1
-		));
-
-
-		# Look for batch available from Emails (published)
-	foreach($emails as $key => $email):
-		$model = json_decode($email['Email']['model']);
-		$model_name = $model->model;
-		$model_id = $model->model_id;
-
-		switch($model_name){
-			case 'logs':
-				$batch_logs = $this->batch_logs($model_id);
-				$attachment = $batch_logs['attachment'];
-				$count = $batch_logs['count'];
-			break;
-			case 'leads':
-				$batch_leads = $this->batch_leads($model_id, $reportdate);				
-				$attachment = $batch_leads['attachment'];
-				$count = $batch_leads['count'];
-			break;
-			default:			
-				$count = '';
-			break;
-		}
-		$model_id = str_replace(',', '.', $model_id);
-		$fileattach = "http://leads.e-storm.com/emails/download?campaign=$model_id&report=$reportdate";
-		$attachment = str_replace(',', '.', $attachment);
-
-		$replace 	= array('{REPORTDATE}', '{ATTACHMENT}', '{REPORTSUMMARY}');
-		$replaced 	= array($reportdate, $fileattach, $count);
-
-		if($email):
-			sleep(10);
-		$cc			= explode(',', $email['Email']['cc']);
-		$to			= explode(',', $email['Email']['to']);
-		$from		= $this->User->find('first', array(
-			'conditions' => array('User.id' => $email['Email']['user_id']),			
-		    'recursive' => -1, //int
-		    'fields' => array('User.email','User.name')
-		));
-		$subject	= str_replace($replace, $replaced, $email['Email']['subject']);
-		$body		= $email['Email']['body'];
-		$footer		= $email['Email']['footer']; 
-		$data 		= str_replace($replace, $replaced, $body.$footer);
-
-		$Email = new CakeEmail();
-		$Email->template('default', 'default');
-		$Email->from(array($from['User']['email'] => $from['User']['name']));
-		$Email->to($to);
-		$Email->cc($cc);
-		$Email->subject($subject);
-		if(isset($attachment)){
-			$Email->attachments($attachment);			
-		}
-		$Email->emailFormat('both');
-		$res = $Email->send($data);
-		$this->Session->setFlash($res ? 'Email sent' : 'Email not sent');
-        // return false;
-        endif;
-
-    endforeach;
-	}
 
 	public function download(){
         $this->layout = false;
