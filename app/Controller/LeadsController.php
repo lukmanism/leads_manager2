@@ -88,27 +88,26 @@ class LeadsController extends AppController {
  */
 	public function incoming() {
         $this->autoRender = false; 
+        $rplcReferer 		= array('http://', 'https://');
+        $rplcReferered 		= array('', '');
         if ($this->request->is('post')) {
-	        $client_ip  = $this->request->clientIp();
-	        $campaign_id   = $_GET['campaign'];    
-
-	        $campaign = $this->Lead->Campaign->find('first', array(
+	        $client_ip  	= $this->request->clientIp();
+        	$pagesource 	= str_replace($rplcReferer,$rplcReferered,$_SERVER["HTTP_REFERER"]);
+	        $campaign_id   	= $_GET['campaign'];    
+	        $campaign 		= $this->Lead->Campaign->find('first', array(
 	        	'conditions' 	=> array('Campaign.id' => $campaign_id),
 	        	'recursive' 	=> -1,
 	        	'fields' 		=> array('Campaign.external', 'Campaign.rules', 'Campaign.method'),
 	        ));
-
 	        $postURL    = $campaign['Campaign']['external'];
 	        $rules    	= $campaign['Campaign']['rules'];
-	        $method    	= $campaign['Campaign']['method'];
-	        
+	        $method    	= $campaign['Campaign']['method'];	        
 	        $this->Lead->set($this->request->data);
-	        $validates = json_decode($rules, true);
-	        $this->Lead->validate = $validates;
+	        $validates 	= json_decode($rules, true);
 
+	        $this->Lead->validate = $validates;
 	        if ($this->Lead->validates()) { // it validated logic
 	            $posted = $this->request->data;
-
 	            $emailfield     = json_decode($rules);
 	            foreach ($emailfield as $key => $value) {
 	                if(stristr($key,'email')){ # look for email field. must have '*email*' keyword in
@@ -116,47 +115,43 @@ class LeadsController extends AppController {
 	                    break;
 	                }
 	            }
-
 	            foreach ($validates as $key => $value) {
 	            	@$rule = (!is_array($value[0]['rule']))? $value[0]['rule']: $value[0]['rule'][0];
 	                if($rule == 'email'){ # look for email field
-	                    echo $emailfield = $key;
+	                    $emailfield = $key;
 	                } elseif($rule == 'trackid') { # look for trackid field
-	                    echo $trackidfield = $key;
+	                    $trackidfield = $key;
 	                }
 	            }
-
 	            $email = $posted[$emailfield]; # user predefine in campaign table
 	            $trackid = $posted[$trackidfield]; # user predefine in campaign table
 	            $redirect = isset($posted['redirect']) ? "http://".$posted['redirect'] : array('action' => 'posted'); # fetch 'redirect' value for conversion page redirect
-
 	            # reformat lead entry
 	            $keyvalidate = array_keys($validates);
 	            $repost = array();
 	            foreach ($keyvalidate as $key => $value) {
 	            	$repost[$value] = @$posted[$value];
 	            }
-
 	            $leads = array( 
 	                'Lead'  => array(
-	                "lead"     		=> json_encode($repost), # compact lead values into one field
-	                "email"     	=> $email, 
-	                "campaign_id"  	=> $campaign_id, 
-	                "track_id"  	=> $trackid,
-	                "ip"       		=> $client_ip
+	                'lead'     		=> json_encode($repost), # compact lead values into one field
+	                'email'     	=> $email,
+	                'campaign_id'  	=> $campaign_id,
+	                'track_id'  	=> $trackid,
+	                'ip'       		=> $client_ip,
+	                'source' 		=> $pagesource
 	            ));
-
                 $this->Lead->create();
                 if ($this->Lead->save($leads, array('validate' => false))) {
-
 	                if(!empty($postURL)){  #cURL post, then logged
 	                    $this->Log = ClassRegistry::init('Log');
 	                    $log = $this->Lead->postExternal($postURL);
+        				$logreferer = str_replace($rplcReferer,$rplcReferered,$_SERVER["HTTP_REFERER"]);
 	                    $logs = array( 
 	                        'Log'           => array(
 	                        'leads_id'      => $this->Lead->id,
 	                        'campaign_id'   => $campaign_id,
-	                        'referer'       => str_replace('http://', '', $_SERVER['HTTP_REFERER']),
+	                        'referer'       => $logreferer,
 	                        'ip'            => $client_ip,
 	                        'logs'          => trim($log['logs']),
 	                        'type'          => $log['type']
@@ -170,7 +165,7 @@ class LeadsController extends AppController {
                     if($method == 0){
                         echo $this->Lead->displayMethod($method,$message);
                     } else {
-                        $this->redirect($redirect);
+                        $this->redirect($redirect); #conversion page redirect
                     }
                 } else {
                     $message = array(array('module' => array('insert'),'status' => array('failed')));

@@ -32,6 +32,9 @@ else: # Report Results
         <?php echo '<span>'.$this->Paginator->sort('IP').'</span>'.search_form('ip', ''); ?>
     </th>
     <th class="form_block">
+        <?php echo '<span>'.$this->Paginator->sort('Page Src').'</span>'.search_form('source', ''); ?>
+    </th>
+    <th class="form_block">
         <?php echo '<span>'.$this->Paginator->sort('Created').'</span>'.search_form('created', ''); ?>
     </th>
     </tr>
@@ -48,6 +51,7 @@ else: # Report Results
             <?php echo $this->Html->link($lead['Campaign']['name'], array('controller' => 'campaigns', 'action' => 'view', $lead['Campaign']['id'])); ?>
         </td>
         <td><?php echo h($lead['Lead']['ip']); ?>&nbsp;</td>
+        <td><?php echo h($lead['Lead']['source']); ?>&nbsp;</td>
         <td><?php echo h($lead['Lead']['created']); ?>&nbsp;</td>
     </tr>
 <?php endforeach; ?>
