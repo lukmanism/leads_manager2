@@ -34,8 +34,10 @@ class AppController extends Controller {
     public $components = array(
         'Acl',
         'Auth' => array(
-            'authorize' => array(
-                'Actions' => array('actionPath' => 'controllers')
+            'loginAction'       => array('controller' => 'users', 'action' => 'login'),
+            'loginRedirect'     => array('controller' => 'leads', 'action' => 'index'),
+            'logoutRedirect'    => array('controller' => 'users', 'action' => 'login'),
+            'authorize'         => array('Actions' => array('actionPath' => 'controllers')
             )
         ),
         'Session'
@@ -44,79 +46,6 @@ class AppController extends Controller {
 
     function beforeFilter() {
         //Configure AuthComponent
-        // $this->Auth->authorize = 'actions';
-        $this->Auth->loginAction = array('controller' => 'users', 'action' => 'login');
-        $this->Auth->logoutRedirect = array('controller' => 'users', 'action' => 'login');
-        $this->Auth->loginRedirect = array('controller' => 'leads', 'action' => 'index');
-    }
-
-
-    public function batch_leads($campaign_id, $reportdate){
-        ini_set('max_execution_time', 10000); //increase max_execution_time to 10 min if data set is very large
-        $this->Lead = ClassRegistry::init('Lead');        
-        $conditions = " AND campaign_id IN($campaign_id)";
-    
-        $qcount = "
-            SELECT SUBSTRING_INDEX( SUBSTRING_INDEX( SUBSTRING_INDEX( SUBSTRING_INDEX( SUBSTRING_INDEX( SUBSTRING_INDEX( SUBSTRING_INDEX( SUBSTRING_INDEX( SUBSTRING_INDEX( SUBSTRING_INDEX( track_id, '9', 1 ) , '8', 1 ) , '7', 1 ) , '6', 1 ) , '5', 1 ) , '4', 1 ) , '3', 1 ) , '2', 1 ) , '1', 1 ) , '0', 1 ) AS tid, COUNT( DISTINCT email ) AS trackcount, email
-            FROM leads
-            WHERE created
-            BETWEEN DATE_SUB('$reportdate', INTERVAL 1 DAY) AND NOW()
-            $conditions
-            GROUP BY tid
-            ORDER BY tid 
-        ";        
-        $qreport = "
-            SELECT *, 
-            ( SELECT DISTINCT email ) AS email,
-            ( SELECT DISTINCT track_id ) AS cid
-            FROM leads
-            WHERE created
-            BETWEEN DATE_SUB( '$reportdate', INTERVAL 1 DAY ) AND NOW()
-            $conditions
-            GROUP BY email, cid
-            ORDER BY created
-        ";
-    
-        //create a file
-        $campaign_id = str_replace(',', '.', $campaign_id);
-        $attachment = "../../app/tmp/downloads/".$reportdate."_$campaign_id.csv";
-        $csv_file   = fopen($attachment, 'w');
-        $results    = $this->Lead->query($qreport);
-
-        $th         = array();
-        $x          = 0;
-        foreach ($results as $lreport_key => $lreport_value):
-            $td = array();
-            $leads = json_decode($lreport_value['leads']['lead']);
-            foreach (@$leads as $leadkey => $leadval) {
-                if($x <= 0) { array_push($th, $leadkey); }
-                array_push($td, $leadval);
-            }
-            if($x <= 0) { fputcsv($csv_file,$th,',','"'); }
-            $x++;
-            fputcsv($csv_file,$td,',','"');
-            unset($td);
-        endforeach;
-        fclose($csv_file);
-
-        $leads_count = $this->Lead->query($qcount);
-
-        $count = "<h4>Leads Campaign Summary</h4>";
-        $count .= '<table><tr><th>Campaign ID</th><th>Total</th></tr>';
-        foreach ($leads_count as $lcount_key => $lcount_value) {
-            $count .= '<tr><td>'.strtoupper($lcount_value[0]['tid']).'</td>';
-            $count .= '<td>'.$lcount_value[0]['trackcount'].'</td></tr>';
-        } 
-        $count .= '</table>';
-
-        return array(
-            'attachment'    => $attachment, 
-            'count'         => $count
-        );
-    }
-
-    public function batch_logs (){
-        return true;
     }
 }
 

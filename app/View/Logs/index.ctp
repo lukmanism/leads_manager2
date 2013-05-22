@@ -44,7 +44,12 @@ else:
 		);
 
 		?>&nbsp;</td>
-		<td><?php echo h($log['Log']['type']); ?>&nbsp;</td>
+		<td style="text-align: center;">
+		<?php 
+		$img = ($log['Log']['type'] == 'ERROR')? 'alert_small.gif': 'warning_small.png';
+		echo '<img alt="'.$log['Log']['type'].'" src="./acl/img/design/'.$img.'">';
+		?>
+		</td>
 		<td><?php echo h($log['Log']['created']); ?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('View'), array('action' => 'view', $log['Log']['id'])); ?>

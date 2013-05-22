@@ -134,7 +134,7 @@ class Lead extends AppModel {
             break;
             case 1:
             $referaw = explode('?', $_SERVER['HTTP_REFERER']);
-            $referer = (is_array($referaw))? $referaw[0] : $_SERVER['HTTP_REFERER'];
+            $referer = (is_array($referaw))? $_SERVER['HTTP_REFERER'].'&' : $_SERVER['HTTP_REFERER'].'?';
             $message = '';        
                 foreach ($thatmessage as $key1 => $value1) {
                     foreach ($value1 as $key2 => $value2) {
@@ -144,7 +144,7 @@ class Lead extends AppModel {
                         }
                     }
                 }
-            $message = $referer.'?'.rtrim($message, "&");
+            $message = $referer.rtrim($message, "&");
             break;
         }
         return $message;

@@ -44,9 +44,12 @@
 		);
 		?>&nbsp;</td>
 		<td><?php echo h($email['Email']['created']); ?>&nbsp;</td>
-		<td><?php 
-		echo ($email['Email']['published'] == 1)? 'True': 'False';
-		?>&nbsp;</td>
+		<td style="text-align: center;">
+		<?php 
+		$img = ($email['Email']['published'] == 1)? 'tick': 'cross';
+		echo '<img alt="" src="./acl/img/design/'.$img.'.png">';
+		?>
+		</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('View'), array('action' => 'view', $email['Email']['id'])); ?>
 			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $email['Email']['id'])); ?>

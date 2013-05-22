@@ -10,6 +10,7 @@ App::uses('AuthComponent', 'Controller/Component');
 class User extends AppModel {
 
 	var $name = 'User';
+	var $password;
 	var $actsAs = array('Acl' => array('type' => 'requester'));
 
 /**
@@ -58,16 +59,16 @@ class User extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
-		'password' => array(
-			'notempty' => array(
-				'rule' => array('notempty'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-			),
-		),
+        'password' => array(
+            'required' => array(
+                'rule' => array('notEmpty'),
+                'message' => 'A password is required'
+            ),
+            'range' => array(
+                'rule' => array('between', 5, 64),
+                'message' => 'Between 5 and 64 characters'
+            ),
+        )
 	);
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
@@ -130,7 +131,7 @@ class User extends AppModel {
 	}
 
 	public function beforeSave($options = array()) {
-        $this->data['User']['password'] = AuthComponent::password($this->data['User']['password']);
+        // $this->data['User']['password'] = AuthComponent::password($this->data['User']['password']);
         return true;
     }
 
