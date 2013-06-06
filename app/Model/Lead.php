@@ -49,8 +49,26 @@ class Lead extends AppModel {
         return true;
     }
 
-	public function email() {
-        return true;
+    public function phone($check,$val,$format) {
+        if(is_array($check)) $check = $this->emailSplitter($check);
+        $phone_regex    = "/^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/";
+        $us_regex       = "/^(1-?)?(\([2-9]\d{2}\)|[2-9]\d{2})-?[2-9]\d{2}-?\d{4}$/";
+        if($format == 'us'){
+            if(!preg_match($us_regex,$check)) { return false; } else { return true; }            
+        } else {            
+            if(!preg_match($phone_regex,$check)) { return false; } else { return true; }
+        }
+    }
+
+    public function postal($check,$val,$format) {
+        if(is_array($check)) $check = $this->emailSplitter($check);
+        $postal_regex   = "/(^\d{5}(-\d{4})?$)|(^[ABCEGHJKLMNPRSTVXYabceghjklmnpstvxy]{1}\d{1}[A-Za-z]{1} ?\d{1}[A-Za-z]{1}\d{1})$/";
+        $us_regex       = "^\d{5}(?:[-\s]\d{4})?$";
+        if($format == 'us'){
+            if(!preg_match($postal_regex,$check)) { return false; } else { return true; }            
+        } else {            
+            if(!preg_match($postal_regex,$check)) { return false; } else { return true; }
+        }
     }
 
     function emailFormat($email) { # checks email formatting
