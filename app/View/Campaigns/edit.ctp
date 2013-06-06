@@ -215,7 +215,7 @@ $('.fieldtype').live('change', function(){
 
 </div>
 <div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
+	<h3><?php echo __('Menus'); ?></h3>
 	<ul>
         <li><?php echo $this->Html->link(__('List Campaigns'), array('action' => 'index')); ?> </li>
     </ul>

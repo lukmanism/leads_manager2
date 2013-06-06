@@ -45,14 +45,14 @@
 	<ul>
 		<li><?php echo $this->Html->link(__('New'), array('action' => 'add')); ?></li>
 	</ul>
-	<h3><?php echo __('Actions'); ?></h3>
+	<h3><?php echo __('Menus'); ?></h3>
 	<ul>
         <li><?php echo $this->Html->link(__('List Leads'), array('controller' => 'leads', 'action' => 'index')); ?> </li>
         <li><?php echo $this->Html->link(__('List Logs'), array('controller' => 'logs', 'action' => 'index')); ?> </li>
 	</ul>
 
     <? if($curuser['Group']['name'] == 'administrators'): ?>
-    <h3><?php echo __('Admin Actions'); ?></h3>
+    <h3><?php echo __('Administrator'); ?></h3>
     <ul>
         <li><?php echo $this->Html->link(__('List Users'), array('controller' => 'users', 'action' => 'index')); ?> </li>
         <li><?php echo $this->Html->link(__('List Campaigns'), array('controller' => 'campaigns', 'action' => 'index')); ?> </li>

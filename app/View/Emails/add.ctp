@@ -5,7 +5,7 @@
 	<?php
 
 	echo $this->Form->input('Modelname', array(
-		'label' => 'Load Model',
+		'label' => 'Load Component',
 	    'options' => array('leads' => 'Leads', 'logs' => 'Logs')
 		)
 	);
@@ -27,9 +27,11 @@
 	); # From (Admin only)
 	echo $this->Form->input('to');
 	echo $this->Form->input('cc');
-	echo $this->Form->input('subject');
+	echo $this->Form->input('subject', array(
+			'after' => '<div><small>Options: {REPORTDATE}</small></div>'
+		));
 	echo $this->Form->input('body', array(
-			'after' => '<small>{REPORTDATE} {ATTACHMENT} {REPORTSUMMARY}</small>'
+			'after' => '<div><small>Options: {REPORTDATE} {ATTACHMENT} {REPORTSUMMARY}</small></div>'
 		));
 	echo $this->Form->input('footer');
 	echo $this->Form->input('published');
@@ -38,7 +40,7 @@
 <?php echo $this->Form->end(__('Submit')); ?>
 </div>
 <div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
+	<h3><?php echo __('Menus'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('List Emails'), array('action' => 'index')); ?></li>
 	</ul>

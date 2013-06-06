@@ -117,9 +117,9 @@ class EmailsController extends AppController {
         $campaign = $_GET['campaign'];
         #Download file from url
         if(isset($report)){
-	        $filename     = "../../app/tmp/downloads/".$report."_".$campaign.".csv";
+	        $filename     = "../../app/tmp/downloads/{$report}_{$campaign}.csv";
 	        header('Content-Type: application/csv');
-		    header('Content-disposition: attachment;filename='.$report."_".$campaign.".csv");
+		    header("Content-disposition: attachment;filename={$report}_{$campaign}.csv");
 		    readfile($filename);
         } else {
         	return false;
