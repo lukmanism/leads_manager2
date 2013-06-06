@@ -66,11 +66,22 @@ class CampaignsController extends AppController {
                 @$required = $this->Campaign->required($key['required']);
                 $fieldtype = $this->Campaign->format($key['fieldtype'],@$key['fieldprop']);
                 if($key['fieldtype'] == 'email') {                    
-                    $rule = array('rule' => array('email', true), 'message' => 'Please supply a valid email address.');
+                    $rule = array('rule' => array('email', true), 'message' => 'Please supply a valid email address');
                     array_push($allrules[$key['fieldname']], $rule);
                 }
+                if($key['fieldtype'] == 'phone' || $key['fieldtype'] == 'postal') {  
+                    if($key['fieldprop'] == 'us') {
+                        // US phone/postal
+                        $propmessage = "Please supply a valid US {$key['fieldtype']} format";
+                    } else {
+                        // others phone/postal
+                        $propmessage = "Please supply a valid {$key['fieldtype']} format";
+                    }    
+                    $rule = array('rule' => array($key['fieldtype'], null, $key['fieldprop']), 'message' => $propmessage);
+                    array_push($allrules[$key['fieldname']], $rule);     
+                }
                 if($key['fieldtype'] == 'trackid') {                    
-                    @$rule = array('rule' => array('trackid'), 'message' => 'Please supply a valid Track ID.');
+                    @$rule = array('rule' => array('trackid'), 'message' => 'Please supply a valid Track ID');
                     array_push($allrules[$key['fieldname']], $rule);
                 }
                 @$fieldtypearray['rule_format'] = (is_null($fieldtype))? '' : $fieldtype;
@@ -138,25 +149,24 @@ class CampaignsController extends AppController {
                 @$required = $this->Campaign->required($key['required']);
                 @$fieldtype = $this->Campaign->format($key['fieldtype'],@$key['fieldprop']);
                 if($key['fieldtype'] == 'email') {                    
-                    @$rule = array('rule' => array('email', true), 'message' => 'Please supply a valid email address.');
+                    @$rule = array('rule' => array('email', true), 'message' => 'Please supply a valid email address');
                     array_push($allrules[$key['fieldname']], $rule);
                 }
                 if($key['fieldtype'] == 'trackid') {                    
-                    @$rule = array('rule' => array('trackid'), 'message' => 'Please supply a valid Track ID.');
+                    @$rule = array('rule' => array('trackid'), 'message' => 'Please supply a valid Track ID');
                     array_push($allrules[$key['fieldname']], $rule);
                 }
                 if($key['fieldtype'] == 'phone' || $key['fieldtype'] == 'postal') {  
                     if($key['fieldprop'] == 'us') {
                         // US phone/postal
-                        $propmessage = "Please supply a valid US {$key['fieldtype']} format.";
+                        $propmessage = "Please supply a valid US {$key['fieldtype']} format";
                     } else {
                         // others phone/postal
-                        $propmessage = "Please supply a valid {$key['fieldtype']} format.";
+                        $propmessage = "Please supply a valid {$key['fieldtype']} format";
                     }    
                     $rule = array('rule' => array($key['fieldtype'], null, $key['fieldprop']), 'message' => $propmessage);
                     array_push($allrules[$key['fieldname']], $rule);     
                 }
-
                 @$fieldtypearray['rule_format'] = (is_null($fieldtype))? '' : $fieldtype;
                 @$requiredarray['rule_required'] = (is_null($required))? '' : $required;
 
