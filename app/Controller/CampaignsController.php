@@ -130,7 +130,9 @@ class CampaignsController extends AppController {
             $method    = $posted['Campaign']['method'];
             $user_id   = $posted['Campaign']['user_id'];
             $note      = $posted['Campaign']['note'];
+
             // var_dump($rules);
+
             foreach ($rules as $key) {
                 @$allrules[$key['fieldname']] = array();
                 @$required = $this->Campaign->required($key['required']);
@@ -143,6 +145,18 @@ class CampaignsController extends AppController {
                     @$rule = array('rule' => array('trackid'), 'message' => 'Please supply a valid Track ID.');
                     array_push($allrules[$key['fieldname']], $rule);
                 }
+                if($key['fieldtype'] == 'phone' || $key['fieldtype'] == 'postal') {  
+                    if($key['fieldprop'] == 'us') {
+                        // US phone/postal
+                        $propmessage = "Please supply a valid US {$key['fieldtype']} format.";
+                    } else {
+                        // others phone/postal
+                        $propmessage = "Please supply a valid {$key['fieldtype']} format.";
+                    }    
+                    $rule = array('rule' => array($key['fieldtype'], null, $key['fieldprop']), 'message' => $propmessage);
+                    array_push($allrules[$key['fieldname']], $rule);     
+                }
+
                 @$fieldtypearray['rule_format'] = (is_null($fieldtype))? '' : $fieldtype;
                 @$requiredarray['rule_required'] = (is_null($required))? '' : $required;
 
