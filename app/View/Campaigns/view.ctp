@@ -26,7 +26,7 @@
 		<dd>
 <div class="snippet">
 <pre class="htmlCode">
-&lt;form name="<?=$campaign['Campaign']['alias'];?>" method="POST" action="http://leads.e-storm.com/leads/incoming?campaign=<?=$campaign['Campaign']['id'];?>"&gt;<?php
+&lt;form name="<?php echo $campaign['Campaign']['alias'];?>" method="POST" action="http://leads.e-storm.com/leads/incoming?campaign=<?php echo $campaign['Campaign']['id'];?>"&gt;<?php
     $rules = json_decode($campaign['Campaign']['rules'],true); 
     $x = 1;
     foreach ($rules as $key1 => $value1) {
@@ -70,6 +70,6 @@ echo '
 		<li><?php echo $this->Html->link(__('Edit Campaign'), array('action' => 'edit', $campaign['Campaign']['id'])); ?> </li>
 	</ul>
     <!-- Logout -->
-    <div class="logout"><a href="<?=$this->Html->url('/users/logout', true);?>">Logout</a></div>
+    <div class="logout"><a href="<?php echo $this->Html->url('/users/logout', true);?>">Logout</a></div>
 </div>
 

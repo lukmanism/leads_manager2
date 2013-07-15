@@ -1,13 +1,14 @@
 <div class="logs index">
 	<h2><?php echo __('Logs'); ?></h2>
-<?
-if(!isset($_POST['submitloadreport'])):
+<?php
+if(!isset($_GET['cid'])):
 
-    echo '<h1>Select report(s) to load</h1><fieldset><form enctype="multipart/form-data" method="post" action="" name="loadreport">';
+    echo '<h1>Select report(s) to load</h1><fieldset><form enctype="multipart/form-data" method="get" action="" name="loadreport">';
     foreach ($campaigns as $c_id => $c_name):
-        echo '<label><input type="checkbox" name="campaign_id[]" value="'.$c_id.'" />'.$c_name.'</label>';
+        echo '<label><input type="checkbox" class="select_campaign" value="'.$c_id.'" />'.$c_name.'</label>';
     endforeach;
-    echo '<div><input type="submit" class="submit" name="submitloadreport" value="Load Report(s)" /></div></form></fieldset>';
+    echo '<input type="hidden" class="ccid" name="cid" value="" />';
+    echo '<div><input type="submit" class="csubmit" value="Load Report(s)" /></div></form></fieldset>';
 else:
 ?>	
 	<table cellpadding="0" cellspacing="0">
@@ -47,7 +48,7 @@ else:
 		<td style="text-align: center;">
 		<?php 
 		$img = ($log['Log']['type'] == 'ERROR')? 'alert_small.gif': 'warning_small.png';
-		echo '<img alt="'.$log['Log']['type'].'" src="./acl/img/design/'.$img.'">';
+		echo '<img alt="'.$log['Log']['type'].'" src="/acl/img/design/'.$img.'">';
 		?>
 		</td>
 		<td><?php echo h($log['Log']['created']); ?>&nbsp;</td>
@@ -70,7 +71,7 @@ else:
 		echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
 	?>
 	</div>
-<?
+<?php
 endif;     
 ?>
 </div>
@@ -82,17 +83,32 @@ endif;
         <li><?php echo $this->Html->link(__('List Logs'), array('controller' => 'logs', 'action' => 'index')); ?> </li>
 	</ul>
 
-	<? if($user['Group']['name'] == 'administrators'): ?>
+	<?php if($user['Group']['name'] == 'administrators'): ?>
     <h3><?php echo __('Administrator'); ?></h3>
     <ul>
         <li><?php echo $this->Html->link(__('List Users'), array('controller' => 'users', 'action' => 'index')); ?> </li>
         <li><?php echo $this->Html->link(__('List Campaigns'), array('controller' => 'campaigns', 'action' => 'index')); ?> </li>
         <li><?php echo $this->Html->link(__('List Groups'), array('controller' => 'groups', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('List Batch Emails'), array('controller' => 'emails', 'action' => 'index')); ?></li>
-        <li><a href="<?=$this->Html->url('/admin/acl', true);?>">ACL</a></li>
+        <li><a href="<?php=$this->Html->url('/admin/acl', true);?>">ACL</a></li>
 
     </ul>
-	<? endif; ?>
+	<?php endif; ?>
     <!-- Logout -->
-    <div class="logout"><a href="<?=$this->Html->url('/users/logout', true);?>">Logout</a></div>
+    <div class="logout"><a href="<?php=$this->Html->url('/users/logout', true);?>">Logout</a></div>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.csubmit').on('click', function() {
+            var cid = '';
+            $('.select_campaign').each(function(i,e) {
+                if ($(e).is(':checked')) {
+                    var comma = cid.length===0?'':'.';
+                    cid += (comma+e.value);
+                }
+            });
+            $('.ccid').val(cid);
+        });
+    });
+</script>

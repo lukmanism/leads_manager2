@@ -1,9 +1,9 @@
-<?
+<?php
     echo $this->Html->script('jquery.TableCSVExport');
 ?>
 <div class="logs index">
     <h2><?php echo __('Leads'); ?></h2>
-<?
+<?php
 if(!isset($_GET['cid'])): # Select Report
     echo '<h1>Select report(s) to load</h1><fieldset><form method="get" action="" name="loadreport">';
     foreach ($campaigns as $c_id => $c_name):
@@ -20,7 +20,7 @@ else: # Report Results
     <th class="form_block">
         <?php echo '<span>'.$this->Paginator->sort('id').'</span>'.search_form('id', ''); ?>
     </th>
-<?
+<?php
     foreach ($cheader[0] as $value) {
         echo '<th class="form_block"><span>'.str_replace('_',' ',$value).'</span>'.search_form($value, '', 'lead').'</th>';
     }
@@ -41,7 +41,7 @@ else: # Report Results
     <?php foreach ($leads as $lead): ?>
     <tr>
         <td><?php echo h($lead['Lead']['id']); ?>&nbsp;</td>
-<?
+<?php
     $leads = json_decode($lead['Lead']['lead']);
     foreach (@$leads as $leadkey => $leadval) {
         echo "<td>$leadval</td>";
@@ -69,7 +69,7 @@ else: # Report Results
         echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
     ?>
     </div>
-<?
+<?php
 endif;     
 ?>
 </div>
@@ -79,7 +79,7 @@ endif;
     <ul>
         <li><?php echo $this->Html->link(__('List Leads'), array('controller' => 'leads', 'action' => 'index')); ?> </li>
         <li><?php echo $this->Html->link(__('List Logs'), array('controller' => 'logs', 'action' => 'index')); ?> </li>
-        <?
+        <?php
         if(isset($_GET['cid'])){
         ?>        
         <li><a href="#" class="csv_export">Export CSV</a></li>
@@ -92,13 +92,13 @@ endif;
             </li>
             <!-- <li>
                 <form method="post" action="leads/csv/" name="export_all" class="export_all">
-                    <input type="hidden" class="csvcid" name="csvcid" value="<?=$_GET['cid']?>" />
+                    <input type="hidden" class="csvcid" name="csvcid" value="<?php echo $_GET['cid']?>" />
                     <input type="hidden" class="csvheader" name="csvheader" value="" />
                     <input type="submit" class="csv_entire" value="- Entire Results" />
                 </form>
             </li> -->
         </ul>
-        <? 
+        <?php 
         }
         if(isset($_GET['mod'])){
             echo '<li>';
@@ -115,11 +115,11 @@ endif;
         <li><?php echo $this->Html->link(__('List Campaigns'), array('controller' => 'campaigns', 'action' => 'index')); ?> </li>
         <li><?php echo $this->Html->link(__('List Groups'), array('controller' => 'groups', 'action' => 'index')); ?> </li>
         <li><?php echo $this->Html->link(__('List Batch Emails'), array('controller' => 'emails', 'action' => 'index')); ?></li>
-        <li><a href="<?=$this->Html->url('/admin/acl', true);?>">ACL</a></li>
+        <li><a href="<?php echo $this->Html->url('/admin/acl', true);?>">ACL</a></li>
     </ul>
     <? endif; ?>
     <!-- Leadout -->
-    <div class="logout"><a href="<?=$this->Html->url('/users/logout', true);?>">Logout</a></div>
+    <div class="logout"><a href="<?php echo $this->Html->url('/users/logout', true);?>">Logout</a></div>
 </div>
 
 <script type="text/javascript">
@@ -169,7 +169,7 @@ endif;
     });
 </script>
 
-<?
+<?php
     function search_form($sfield, $svalue, $type = NULL) {
         $scid = $_GET['cid'];
         $form = '<div class="form_hover"><form name="loadsearch'.$type.'" class="loadsearch'.$type.'" action="" method="get">';

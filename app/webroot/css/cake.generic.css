@@ -24,7 +24,6 @@
 
 /** General Style Info **/
 body {
-	background: #003d4c;
 	color: #fff;
 	font-family:'lucida grande',verdana,helvetica,arial,sans-serif;
 	font-size:70%;
@@ -53,7 +52,7 @@ h1 {
 }
 h2 {
 	background:#fff;
-	color: #e32;
+	color: #F45E31;
 	font-family:'Gill Sans','lucida grande', helvetica, arial, sans-serif;
 	font-size: 190%;
 }
@@ -80,12 +79,15 @@ p {
 
 #header{
 	padding: 10px 20px;
+	background-color: #F45E31;
 }
 #header h1 {
 	line-height:20px;
-	background: #003d4c url('../img/cake.icon.png') no-repeat left;
 	color: #fff;
 	padding: 0px 30px;
+	font-size: 200%;
+	background-color: transparent;
+	font-family:'Gill Sans','lucida grande', helvetica, arial, sans-serif;
 }
 #header h1 a {
 	color: #fff;
@@ -103,7 +105,6 @@ p {
 	clear: both;
 	color: #333;
 	padding: 10px 20px 40px 20px;
-	overflow: auto;
 }
 #footer {
 	clear: both;
@@ -117,7 +118,7 @@ div.index,
 div.view {
 	float:right;
 	width:76%;
-	border-left:1px solid #666;
+	border-left:1px dotted #C7C8BF;
 	padding:10px 2%;
 }
 div.actions {
@@ -267,7 +268,7 @@ fieldset {
 	padding: 16px 10px;
 }
 fieldset legend {
-	color: #e32;
+	color: #F45E31;
 	font-size: 160%;
 	font-weight: bold;
 }
@@ -296,7 +297,7 @@ form .required {
 	font-weight: bold;
 }
 form .required label:after {
-	color: #e32;
+	color: #F45E31;
 	content: '*';
 	display:inline;
 }

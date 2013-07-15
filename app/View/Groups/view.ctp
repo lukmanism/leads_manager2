@@ -30,5 +30,5 @@
 		<li><?php echo $this->Html->link(__('Edit Group'), array('action' => 'edit', $group['Group']['id'])); ?> </li>
 	</ul>
     <!-- Logout -->
-    <div class="logout"><a href="<?=$this->Html->url('/users/logout', true);?>">Logout</a></div>
+    <div class="logout"><a href="<?php echo $this->Html->url('/users/logout', true);?>">Logout</a></div>
 </div>

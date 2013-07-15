@@ -15,5 +15,5 @@
 		<li><?php echo $this->Html->link(__('List Groups'), array('action' => 'index')); ?></li>
 	</ul>
     <!-- Logout -->
-    <div class="logout"><a href="<?=$this->Html->url('/users/logout', true);?>">Logout</a></div>
+    <div class="logout"><a href="<?php echo $this->Html->url('/users/logout', true);?>">Logout</a></div>
 </div>

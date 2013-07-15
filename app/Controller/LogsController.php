@@ -18,7 +18,7 @@ class LogsController extends AppController {
         $this->set('user', $user);
         $group = $user['Group']['name'];
 
-        if(!isset($_POST['submitloadreport'])){
+        if(!isset($_GET['cid'])){
 	        if($group == 'administrators') {
 	        	$campaigns = $this->Campaign->find('list');
 	            $this->set('campaigns', $campaigns);
@@ -27,9 +27,10 @@ class LogsController extends AppController {
 	            $this->set('campaigns', $campaigns);
 	        }
         } else {
-            $campaign_ids = $_POST['campaign_id'];
+            $campaign_ids = explode('.', $_GET['cid']);
             $this->paginate = array(
-		        'conditions' => array('Log.campaign_id' => $campaign_ids)
+		        'conditions' => array('Log.campaign_id' => $campaign_ids),
+         		'order' => array('Log.created' => 'DESC')
 		    );	        
 	        $this->set('logs', $this->paginate('Log'));
         }
