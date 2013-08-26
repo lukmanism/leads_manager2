@@ -85,12 +85,12 @@ class Lead extends AppModel {
     	}
     }
 
-	public function postExternal ($posturl){
-        $postdata = file_get_contents('php://input');      
+    public function postExternal ($posturl,$repost){
+        $postdata = http_build_query($repost);
         $posted = curl_init();//open connection    
         curl_setopt($posted,CURLOPT_URL,$posturl); #set the url, number of POST vars, POST data
         curl_setopt($posted, CURLOPT_FRESH_CONNECT, true);
-		// curl_setopt($posted, CURLOPT_TIMEOUT_MS, 1); #False curl error reporting when enabled
+        // curl_setopt($posted, CURLOPT_TIMEOUT_MS, 1); #False curl error reporting when enabled
         curl_setopt($posted,CURLOPT_POSTFIELDS,$postdata);     
         $result = curl_exec($posted);//execute post 
         $curl_errno = curl_errno($posted); // Added logger

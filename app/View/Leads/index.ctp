@@ -108,7 +108,7 @@ endif;
         ?>
     </ul>
 
-    <? if($user['Group']['name'] == 'administrators'): ?>
+    <?php if($user['Group']['name'] == 'administrators'): ?>
     <h3><?php echo __('Administrator'); ?></h3>
     <ul>
         <li><?php echo $this->Html->link(__('List Users'), array('controller' => 'users', 'action' => 'index')); ?> </li>
@@ -117,7 +117,7 @@ endif;
         <li><?php echo $this->Html->link(__('List Batch Emails'), array('controller' => 'emails', 'action' => 'index')); ?></li>
         <li><a href="<?php echo $this->Html->url('/admin/acl', true);?>">ACL</a></li>
     </ul>
-    <? endif; ?>
+    <?php endif; ?>
     <!-- Leadout -->
     <div class="logout"><a href="<?php echo $this->Html->url('/users/logout', true);?>">Logout</a></div>
 </div>

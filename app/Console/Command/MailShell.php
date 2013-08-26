@@ -30,7 +30,7 @@ class MailShell extends AppShell {
 
             switch($model_name){
                 case 'logs':
-                    $batch_logs = $this->batch_logs($model_id);
+                    $batch_logs = $this->batch_logs($reportdate);
                     $attachment = $batch_logs['attachment'];
                     $count = $batch_logs['count'];
                 break;
@@ -45,8 +45,14 @@ class MailShell extends AppShell {
                 break;
             }
             $model_id = str_replace(',', '.', $model_id);
-            $fileattach = "http://leads.e-storm.com/emails/download?campaign=$model_id&report=$reportdate"; #to be change according to the server setup. variable must be able to run under shell environment
-            $attachment = str_replace(',', '.', $attachment);
+
+            if($attachment){
+                $fileattach = "http://leads.e-storm.com/emails/download?campaign=$model_id&report=$reportdate"; #to be change according to the server setup. variable must be able to run under shell environment
+                $attachment = str_replace(',', '.', $attachment);
+            } else {
+                echo 'No reports generated for today.';
+                exit;
+            }
 
             $replace    = array('{REPORTDATE}', '{ATTACHMENT}', '{REPORTSUMMARY}');
             $replaced   = array($reportdate, $fileattach, $count);
@@ -74,7 +80,7 @@ class MailShell extends AppShell {
                 $Email->cc($cc); 
             }            
             $Email->subject($subject);
-            if(!empty($attachment)){ $Email->attachments($attachment); }
+            if($attachment){ $Email->attachments($attachment); }
             $Email->emailFormat('both');
             $mailstatus = $Email->send($data);
             echo $mailstatus ? 'Email sent' : 'Email not sent';
@@ -107,42 +113,92 @@ class MailShell extends AppShell {
             $conditions
             GROUP BY email, cid
             ORDER BY created";    
-        //create a file
-        $campaign_id = str_replace(',', '.', $campaign_id);
-        $attachment = "/home/leads/public_html/app/tmp/downloads/".$reportdate."_$campaign_id.csv"; #to be change according to the server setup. variable must be able to run under shell environment
-        $csv_file   = fopen($attachment, 'w');
-        $results    = $this->Lead->query($qreport);
-        $th         = array();
-        $x          = 0;
-        foreach ($results as $lreport_key => $lreport_value):
-            $td = array();
-            $leads = json_decode($lreport_value['leads']['lead']);
-            foreach (@$leads as $leadkey => $leadval) {
-                if($x <= 0) { array_push($th, $leadkey); }
-                array_push($td, $leadval);
-            }
-            if($x <= 0) { fputcsv($csv_file,$th,',','"'); }
-            $x++;
-            fputcsv($csv_file,$td,',','"');
-            unset($td);
-        endforeach;
-        fclose($csv_file);
+
         $leads_count = $this->Lead->query($qcount);
-        $count = "<h4>Leads Campaign Summary</h4>";
-        $count .= '<table><tr><th>Campaign ID</th><th>Total</th></tr>';
-        foreach ($leads_count as $lcount_key => $lcount_value) {
-            $count .= '<tr><td>'.strtoupper($lcount_value[0]['tid']).'</td>';
-            $count .= '<td>'.$lcount_value[0]['trackcount'].'</td></tr>';
-        } 
-        $count .= '</table>';
-        return array(
-            'attachment'    => $attachment, 
-            'count'         => $count
-        );
+        if($leads_count) {            
+            //create a file            
+            $campaign_id = str_replace(',', '.', $campaign_id);        
+            $attachment = "/home/leads/public_html/app/tmp/downloads/".$reportdate."_$campaign_id.csv"; #to be change according to the server setup. variable must be able to run under shell environment
+            $csv_file   = fopen($attachment, 'w');
+            $results    = $this->Lead->query($qreport);
+            $th         = array();
+            $x          = 0;
+            foreach ($results as $lreport_key => $lreport_value):
+                $td = array();
+                $leads = json_decode($lreport_value['leads']['lead']);
+                foreach (@$leads as $leadkey => $leadval) {
+                    if($x <= 0) { array_push($th, $leadkey); }
+                    array_push($td, $leadval);
+                }
+                if($x <= 0) { fputcsv($csv_file,$th,',','"'); }
+                $x++;
+                fputcsv($csv_file,$td,',','"');
+                unset($td);
+            endforeach;
+            fclose($csv_file);
+
+            $count = "<h4>Leads Campaign Summary</h4>";
+            $count .= '<table><tr><th>Campaign ID</th><th>Total</th></tr>';
+            foreach ($leads_count as $lcount_key => $lcount_value) {
+                $tcount = ($lcount_value[0]['trackcount'])? $lcount_value[0]['trackcount'] : 0;
+                $count .= '<tr><td>'.strtoupper($lcount_value[0]['tid']).'</td>';
+                $count .= '<td>'.$tcount.'</td></tr>';
+            } 
+            $count .= '</table>';
+
+            return array(
+                'attachment'    => $attachment, 
+                'count'         => $count
+            );
+        } else {
+            return false;
+        }
+
+
     }
 
-    public function batch_logs (){ #Pending
-        return true;
+    public function batch_logs ($reportdate){ #Pending
+        ini_set('max_execution_time', 10000); //increase max_execution_time to 10 min if data set is very large
+        $this->Log = ClassRegistry::init('Log');       
+        $qreport = "
+            SELECT *
+            FROM logs 
+            WHERE created
+            BETWEEN DATE_SUB('$reportdate', INTERVAL 1 DAY) AND NOW()";    
+
+        $logs    = $this->Log->query($qreport);
+        if($logs) {            
+            //create a file                 
+            $attachment = "/home/leads/public_html/app/tmp/downloads/".$reportdate."_logs.csv"; 
+            $csv_file   = fopen($attachment, 'w');
+            $th         = array('id','leads_id','campaign_id','referer','ip','logs','type','created');
+            $x          = 0;
+            foreach ($logs as $key => $val):
+                $td = array();
+                array_push($td, $val['logs']['id']);
+                array_push($td, $val['logs']['leads_id']);
+                array_push($td, $val['logs']['campaign_id']);
+                array_push($td, $val['logs']['referer']);
+                array_push($td, $val['logs']['ip']);
+                array_push($td, $val['logs']['logs']);
+                array_push($td, $val['logs']['type']);
+                array_push($td, $val['logs']['created']);
+                if($x <= 0) { fputcsv($csv_file,$th,',','"'); }
+                $x++;
+                fputcsv($csv_file,$td,',','"');
+                unset($td);
+            endforeach;
+            fclose($csv_file);
+
+            return array(
+                'attachment'    => $attachment, 
+                'count'         => ''
+            );
+        } else {
+            return false;
+        }
+
+
     }
 
 

@@ -97,7 +97,7 @@ class LeadsController extends AppController {
 	        $campaign 		= $this->Lead->Campaign->find('first', array(
 	        	'conditions' 	=> array('Campaign.id' => $campaign_id),
 	        	'recursive' 	=> -1,
-	        	'fields' 		=> array('Campaign.external', 'Campaign.rules', 'Campaign.method'),
+	        	'fields' 		=> array('Campaign.external', 'Campaign.rules', 'Campaign.method')
 	        ));
 	        $postURL    = $campaign['Campaign']['external'];
 	        $rules    	= $campaign['Campaign']['rules'];
@@ -145,7 +145,7 @@ class LeadsController extends AppController {
                 if ($this->Lead->save($leads, array('validate' => false))) {
 	                if(!empty($postURL)){  #cURL post, then logged
 	                    $this->Log = ClassRegistry::init('Log');
-	                    $log = $this->Lead->postExternal($postURL);
+	                    $log = $this->Lead->postExternal($postURL,$repost);
         				$logreferer = str_replace($rplcReferer,$rplcReferered,$_SERVER["HTTP_REFERER"]);
 	                    $logs = array( 
 	                        'Log'           => array(
