@@ -60,6 +60,7 @@ class CampaignsController extends AppController {
             $user_id   = $posted['Campaign']['user_id'];
             $note      = $posted['Campaign']['note'];
 
+
             foreach ($rules as $key) {
                 $allrules[$key['fieldname']] = array();
 
@@ -93,7 +94,6 @@ class CampaignsController extends AppController {
                 if(!empty($required)){
                     array_push($allrules[$key['fieldname']], @$requiredarray['rule_required']);
                 }
-
             }
 
             $leads = array(

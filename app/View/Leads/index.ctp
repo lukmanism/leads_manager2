@@ -38,15 +38,17 @@ else: # Report Results
         <?php echo '<span>'.$this->Paginator->sort('Created').'</span>'.search_form('created', ''); ?>
     </th>
     </tr>
-    <?php foreach ($leads as $lead): ?>
+    <?php 
+    foreach ($leads as $lead): 
+?>
     <tr>
         <td><?php echo h($lead['Lead']['id']); ?>&nbsp;</td>
-<?php
-    $leads = json_decode($lead['Lead']['lead']);
-    foreach (@$leads as $leadkey => $leadval) {
-        echo "<td>$leadval</td>";
-    }
-?>
+        <?php
+            $leads = json_decode($lead['Lead']['lead']);
+            foreach (@$leads as $leadkey => $leadval) {
+                echo "<td>$leadval</td>";
+            }
+        ?>
         <td>
             <?php echo $this->Html->link($lead['Campaign']['name'], array('controller' => 'campaigns', 'action' => 'view', $lead['Campaign']['id'])); ?>
         </td>
