@@ -86,19 +86,17 @@ class Lead extends AppModel {
     }
 
     public function postExternal ($posturl,$repost){
-        $postdata = http_build_query($repost);
-        $posted = curl_init();//open connection    
-        curl_setopt($posted,CURLOPT_URL,$posturl); #set the url, number of POST vars, POST data
-        curl_setopt($posted, CURLOPT_FRESH_CONNECT, true);
-        // curl_setopt($posted, CURLOPT_TIMEOUT_MS, 1); #False curl error reporting when enabled
-        curl_setopt($posted,CURLOPT_POSTFIELDS,$postdata);     
-        $result = curl_exec($posted);//execute post 
-        $curl_errno = curl_errno($posted); // Added logger
-        $curl_error = curl_error($posted);
-        curl_close($posted);//close connection 
+        $postdata = file_get_contents('php://input');
+        
+        $leadpost = curl_init();//open connection    
+        curl_setopt($leadpost,CURLOPT_URL,$posturl);//set the url, number of POST vars, POST data
+        curl_setopt($leadpost,CURLOPT_POSTFIELDS,$postdata);     
+        $result = curl_exec($leadpost);//execute post    
+        $curl_errno = curl_errno($leadpost); // Added logger
+        $curl_error = curl_error($leadpost); 
+        curl_close($leadpost);//close connection 
 
-        // $out = ob_get_clean();
-        $cleanout = $this->extractPageText($posturl);
+        $cleanout = ob_get_clean();
 
         if ($curl_errno > 0) {
             $logs = array(
@@ -108,12 +106,12 @@ class Lead extends AppModel {
         } else {
           if(empty($result)) { // echo "No data received.";
             $logs = array(
-                "logs"          => $cleanout,
+                "logs"          => $this->extractPageText($cleanout),
                 "type"          => 'CURL NOTICE'
             );   
           } else { // echo "Data received: $result\n";
             $logs = array(
-                "logs"          => $cleanout,
+                "logs"          => $this->extractPageText($cleanout),
                 "type"          => 'NOTICE'
             );   
           }
@@ -123,12 +121,7 @@ class Lead extends AppModel {
     }
 
 
-    public function extractPageText ($filename){
-        // $filename = 'https://localhost/test.html'; #---------TEMPORARY
-
-        /* Read an HTML file */
-        $raw_text = file_get_contents($filename);
-         
+    public function extractPageText ($raw_text){         
         /* Get the file's character encoding from a <meta> tag */
         preg_match( '@<meta\s+http-equiv="Content-Type"\s+content="([\w/]+)(;\s+charset=([^\s"]+))?@i', $raw_text, $matches );
         @$encoding = $matches[3];
