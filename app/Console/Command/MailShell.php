@@ -96,7 +96,7 @@ class MailShell extends AppShell {
         ini_set('max_execution_time', 10000); //increase max_execution_time to 10 min if data set is very large
         $this->Lead = ClassRegistry::init('Lead');        
         $conditions = " WHERE created
-            BETWEEN DATE_SUB('$reportdate', INTERVAL 1 DAY) AND NOW()
+            BETWEEN DATE_SUB('$reportdate 00:00:00', INTERVAL 1 DAY) AND NOW()
             AND track_id NOT LIKE '%test%'
             AND campaign_id IN($campaign_id)";    
         $qcount = "
@@ -164,7 +164,7 @@ class MailShell extends AppShell {
             SELECT *
             FROM logs 
             WHERE created
-            BETWEEN DATE_SUB('$reportdate', INTERVAL 1 DAY) AND NOW()";    
+            BETWEEN DATE_SUB('$reportdate 00:00:00', INTERVAL 1 DAY) AND NOW()";    
 
         $logs    = $this->Log->query($qreport);
         if($logs) {            
